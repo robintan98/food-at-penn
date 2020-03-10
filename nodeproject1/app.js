@@ -8,7 +8,7 @@ var logger = require('morgan');
   Create a Monk connection object
   Monk is used for is simple scope and comprehensibility
   Database is located at localhost:27017/nodeproject1
-  Note: May need to download MongoDB and create nodeproject1 db
+  Note: May need to download MongoDB and create nodeproject1 db branch
   @developer: Robin
 */
 var monk = require('monk');
