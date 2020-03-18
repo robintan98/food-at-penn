@@ -1,18 +1,22 @@
-package com.example.foodpenn;
+package com.foodatpenn;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.foodpenn.R;
+import com.foodatpenn.data.RegistrationStore;
+import com.foodatpenn.data.RegistrationStoreLocal;
+
 public class RegistrationActivity extends AppCompatActivity {
-    RegistrationStore users; //Will be implemented with singleton once we have the server running
-    EditText userName;
+    RegistrationStore users;
+    EditText userName, name;
     EditText password, confirmPassword;
+    EditText phone;
+    EditText year;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,21 +26,37 @@ public class RegistrationActivity extends AppCompatActivity {
         userName = findViewById(R.id.newUsername);
         password = findViewById(R.id.newPassword);
         confirmPassword = findViewById(R.id.newPasswordConfirm);
+        name = findViewById(R.id.name);
+        phone = findViewById(R.id.phone);
+        year = findViewById(R.id.year);
     }
 
     public void checkCreateAccount(View view) {
         String newPassword = password.getText().toString();
         String newPasswordConfirm = confirmPassword.getText().toString();
         String newEmail = userName.getText().toString();
+        String newName = name.getText().toString();
+        String phoneNum = phone.getText().toString();
+        String classYear = year.getText().toString();
         if (newEmail.length() < 10 || !newEmail.substring(newEmail.length()-9).equals("upenn.edu")){
             printMessage("Please use a valid Penn Email");
         } else if (users.accountExists(newEmail)) {
             printMessage("Email already in use");
         } else if (!newPassword.equals(newPasswordConfirm)) {
             printMessage("Passwords must match");
+        } else if (newPassword.length() < 8) {
+            printMessage("Passwords must be at least 8 characters in length");
+        } else if (newPassword.length() < 8) {
+            printMessage("Passwords must be at least 8 characters in length");
+        } else if (newName.trim().length() < 3) {
+            printMessage("Please enter your name");
+        } else if (phoneNum.length() < 10) {
+            printMessage("Please enter a valid phone number");
+        } else if (classYear.length() != 4) {
+            printMessage("Please enter your class year as ####");
         } else {
 
-            users.addUser(newEmail, newPassword);
+            users.addUser(newEmail, newPassword, newName.trim(), new Integer(classYear), phoneNum);
             printMessage("Success!");
             finishActivity(3);
             finish();

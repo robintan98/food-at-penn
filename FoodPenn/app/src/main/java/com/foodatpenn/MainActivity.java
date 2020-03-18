@@ -1,4 +1,4 @@
-package com.example.foodpenn;
+package com.foodatpenn;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,10 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.view.View;
 import android.widget.Toast;
+
+import com.example.foodpenn.R;
+import com.foodatpenn.data.RegistrationStore;
+import com.foodatpenn.data.RegistrationStoreLocal;
 
 public class MainActivity extends AppCompatActivity {
     private EditText userEmail;
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (validate(userName, passString)) {
             Intent i = new Intent(this, LandingPageActivity.class);
+            i.putExtra("Email", userName);
             startActivityForResult(i, 2);
         } else {
             Toast.makeText(
