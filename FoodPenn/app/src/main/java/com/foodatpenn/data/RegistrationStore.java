@@ -7,4 +7,5 @@ public interface RegistrationStore {
     public String getName(String email);
     public int getClassYear(String email);
     public String getPhone(String email);
+    public void modifyUser(String email, String name, int year, String phone);
 }

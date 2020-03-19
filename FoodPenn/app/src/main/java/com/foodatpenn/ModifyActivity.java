@@ -1,6 +1,7 @@
 package com.foodatpenn;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,43 +12,39 @@ import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
 import com.foodatpenn.data.RegistrationStoreLocal;
 
-public class RegistrationActivity extends AppCompatActivity {
+public class ModifyActivity extends AppCompatActivity {
     RegistrationStore users;
     EditText userName, name;
-    EditText password, confirmPassword;
     EditText phone;
     EditText year;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+        setContentView(R.layout.activity_modify_info);
         users = RegistrationStoreLocal.getInstance();
-        userName = findViewById(R.id.newUsername);
-        password = findViewById(R.id.newPassword);
-        confirmPassword = findViewById(R.id.newPasswordConfirm);
-        name = findViewById(R.id.name);
-        phone = findViewById(R.id.phone);
-        year = findViewById(R.id.year);
+        userName = findViewById(R.id.currentEmail);
+        name = findViewById(R.id.modifyName);
+        phone = findViewById(R.id.modifyPhone);
+        year = findViewById(R.id.modifyYear);
+
+
+        userEmail = this.getIntent().getStringExtra("Email");
+        Log.v("Email: ", userEmail);
+        userName.setText(userEmail);
+        name.setText(users.getName(userEmail));
+        phone.setText(users.getPhone(userEmail));
+        year.setText(new Integer(users.getClassYear(userEmail)).toString());
     }
 
-    public void checkCreateAccount(View view) {
-        String newPassword = password.getText().toString();
-        String newPasswordConfirm = confirmPassword.getText().toString();
+    public void modifyAccount(View view) {
         String newEmail = userName.getText().toString();
         String newName = name.getText().toString();
         String phoneNum = phone.getText().toString();
         String classYear = year.getText().toString();
         if (newEmail.length() < 10 || !newEmail.substring(newEmail.length()-9).equals("upenn.edu")){
             printMessage("Please use a valid Penn Email");
-        } else if (users.accountExists(newEmail)) {
-            printMessage("Email already in use");
-        } else if (!newPassword.equals(newPasswordConfirm)) {
-            printMessage("Passwords must match");
-        } else if (newPassword.length() < 8) {
-            printMessage("Passwords must be at least 8 characters in length");
-        } else if (newPassword.length() < 8) {
-            printMessage("Passwords must be at least 8 characters in length");
         } else if (newName.trim().length() < 3) {
             printMessage("Please enter your name");
         } else if (phoneNum.length() < 10) {
@@ -56,14 +53,13 @@ public class RegistrationActivity extends AppCompatActivity {
             printMessage("Please enter your class year as ####");
         } else {
 
-            users.addUser(newEmail.trim(), newPassword, newName.trim(), new Integer(classYear), phoneNum);
+            users.modifyUser(newEmail, newName.trim(), new Integer(classYear), phoneNum);
             printMessage("Success!");
             finishActivity(3);
             finish();
         }
 
     }
-
     private void printMessage(String message) {
         Toast.makeText(
                 this,
@@ -71,4 +67,5 @@ public class RegistrationActivity extends AppCompatActivity {
                 Toast.LENGTH_LONG
         ).show();
     }
+
 }

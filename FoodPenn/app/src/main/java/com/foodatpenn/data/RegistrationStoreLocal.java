@@ -59,4 +59,12 @@ public class RegistrationStoreLocal implements RegistrationStore {
     public String getPhone(String email) {
         return data.get(email).getPhoneNumber();
     }
+
+    @Override
+    public void modifyUser(String email, String name, int year, String phone) {
+        User currentUser = data.get(email);
+        currentUser.setName(name);
+        currentUser.setClassYear(year);
+        currentUser.setPhoneNumber(phone);
+    }
 }

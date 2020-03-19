@@ -18,6 +18,8 @@
         </activity>
         <activity android:name="com.foodatpenn.LandingPageActivity" />
         <activity android:name="com.foodatpenn.RegistrationActivity" />
+        <activity android:name="com.foodatpenn.ModifyPageActivity"/>
+        <activity android:name="com.foodatpenn.ModifyActivity"/>
     </application>
 
 </manifest>
