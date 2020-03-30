@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
-import com.foodatpenn.data.RegistrationStoreLocal;
+import com.foodatpenn.data.RegisterStoreDataLocal;
 
 public class MainActivity extends AppCompatActivity {
     private EditText userEmail;
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         login = (Button) findViewById(R.id.login);
         createAcct = (Button) findViewById(R.id.createAcct);
-        registered = RegistrationStoreLocal.getInstance();
+        registered = RegisterStoreDataLocal.getInstance();
     }
 
     public void loginAttempt(View view) {

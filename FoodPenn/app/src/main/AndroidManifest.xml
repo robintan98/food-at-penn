@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:installLocation="preferExternal"
     package="com.example.foodpenn">
 
     <application
+        android:name = "com.foodatpenn.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,6 +23,9 @@
         <activity android:name="com.foodatpenn.RegistrationActivity" />
         <activity android:name="com.foodatpenn.ModifyPageActivity"/>
         <activity android:name="com.foodatpenn.ModifyActivity"/>
+
     </application>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 </manifest>
