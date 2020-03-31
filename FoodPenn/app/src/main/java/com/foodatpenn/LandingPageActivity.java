@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
-import com.foodatpenn.data.RegistrationStoreLocal;
+import com.foodatpenn.data.RegisterStoreDataLocal;
 
 public class LandingPageActivity extends AppCompatActivity {
     TextView centerMessage;
@@ -23,7 +23,7 @@ public class LandingPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing_page);
 
-        rs = RegistrationStoreLocal.getInstance();
+        rs = RegisterStoreDataLocal.getInstance();
         starterIntent = getIntent();
         centerMessage = findViewById(R.id.centerMessage);
         userEmail = this.getIntent().getStringExtra("Email");

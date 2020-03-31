@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
-import com.foodatpenn.data.RegistrationStoreLocal;
+import com.foodatpenn.data.RegisterStoreDataLocal;
 
 public class ModifyActivity extends AppCompatActivity {
     RegistrationStore users;
@@ -23,7 +23,7 @@ public class ModifyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_info);
-        users = RegistrationStoreLocal.getInstance();
+        users = RegisterStoreDataLocal.getInstance();
         userName = findViewById(R.id.currentEmail);
         name = findViewById(R.id.modifyName);
         phone = findViewById(R.id.modifyPhone);
