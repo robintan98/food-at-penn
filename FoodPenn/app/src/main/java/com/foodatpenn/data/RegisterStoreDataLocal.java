@@ -3,46 +3,77 @@ package com.foodatpenn.data;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.foodatpenn.MyApplication;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.Buffer;
 import java.util.HashMap;
 
 public class RegisterStoreDataLocal implements RegistrationStore {
-
+    private static final String FILE_NAME = "data.txt";
     HashMap<String, User> data;
     static RegistrationStore instance = new RegisterStoreDataLocal();
+    Context currentContext;
 
 
     private RegisterStoreDataLocal () {
         data  = new HashMap<String, User>();
-        Context currentContext = MyApplication.getAppContext();
-        File root = currentContext.getExternalFilesDir(null);
-        File file = new File(root, "data.txt");
-
-
+        currentContext = MyApplication.getAppContext();
+//        File root = currentContext.getExternalFilesDir(null);
+//        File file = new File(root, "data.txt");
+        FileInputStream fis = null;
         try {
-            //Create the file
-            file.createNewFile();
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String current = br.readLine();
-            while (current != null) {
-                User newUser = User.fromString(current);
+            fis = currentContext.openFileInput(FILE_NAME);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+
+            String text;
+
+            while ((text = br.readLine()) != null) {
+                User newUser = User.fromString(text);
                 if (newUser != null) {
                     data.put(newUser.getEmail(), newUser);
                 }
             }
-            br.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+//        try {
+//            //Create the file
+//            file.createNewFile();
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            String current = br.readLine();
+//            while (current != null) {
+//                User newUser = User.fromString(current);
+//                if (newUser != null) {
+//                    data.put(newUser.getEmail(), newUser);
+//                }
+//            }
+//            br.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static RegistrationStore getInstance() {
@@ -53,13 +84,35 @@ public class RegisterStoreDataLocal implements RegistrationStore {
     public void addUser(String email, String password, String name, int year, String phone) {
         User newUser = new User(email, password, name, year, phone);
         data.put(email, newUser);
+
+        String text = newUser.toString();
+        FileOutputStream fos = null;
+
         try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("data.txt", true)));
-            pw.println(newUser.toString());
-            Log.v("Status", "Data Stored");
-        } catch (Exception e){
+            fos = currentContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
+            String writeText = this.currentUsersString() + text;
+            fos.write(writeText.getBytes());
+
+            Toast.makeText(currentContext, "Saved to " + currentContext.getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+//        try {
+//            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("data.txt", true)));
+//            pw.println(newUser.toString());
+//            Log.v("Status", "Data Stored");
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -108,11 +161,32 @@ public class RegisterStoreDataLocal implements RegistrationStore {
         currentUser.setClassYear(year);
         currentUser.setPhoneNumber(phone);
 
+        FileOutputStream fos = null;
+
         try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("data.txt", true)));
-            pw.println(currentUser.toString());
-        } catch (Exception e){
+            fos = currentContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
+            String writeText = this.currentUsersString();
+            fos.write(writeText.getBytes());
+
+            Toast.makeText(currentContext, "Saved to " + currentContext.getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+    }
+
+    private String currentUsersString() {
+        String returnVal = "";
+        for (String userEmail: data.keySet()) {
+            returnVal += data.get(userEmail).toString() + "\n";
+        }
+        return returnVal;
     }
 }
