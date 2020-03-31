@@ -59,21 +59,6 @@ public class RegisterStoreDataLocal implements RegistrationStore {
             }
         }
 
-//        try {
-//            //Create the file
-//            file.createNewFile();
-//            BufferedReader br = new BufferedReader(new FileReader(file));
-//            String current = br.readLine();
-//            while (current != null) {
-//                User newUser = User.fromString(current);
-//                if (newUser != null) {
-//                    data.put(newUser.getEmail(), newUser);
-//                }
-//            }
-//            br.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     public static RegistrationStore getInstance() {
@@ -106,13 +91,7 @@ public class RegisterStoreDataLocal implements RegistrationStore {
             }
         }
 
-//        try {
-//            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("data.txt", true)));
-//            pw.println(newUser.toString());
-//            Log.v("Status", "Data Stored");
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
+
     }
 
     @Override
