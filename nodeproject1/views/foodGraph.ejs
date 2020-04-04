@@ -1,0 +1,80 @@
+<!--
+  HTML for Graphs page.
+  @developer: Hannah
+!-->
+
+<!DOCTYPE html>
+<html>
+
+
+
+  <head>
+    <title>Graphs</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><Graphs></h1>
+  </body>
+  
+    <body>
+	
+	<ul>
+      <%
+		var foodMap = new Map();
+		var foodLabels = [];
+		var foodNums = [];
+
+
+        for (i = 0; i < foodGraph.length; i++) {
+			if (!foodMap.has(foodGraph[i].food)) {
+			 foodMap.set(foodGraph[i].food, 1);
+		   } else {
+		     foodMap.set(foodGraph[i].food, foodMap.get(foodGraph[i].food) + 1);
+			}
+
+        } 
+		
+		foodMap.forEach( (value, key) => {
+            foodLabels.push('"' + key + '"');
+			foodNums.push(value);     
+        });
+
+      %>
+    </ul>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+	<script language="JavaScript"><!--
+
+	function displayBarChart() {
+		var data = {
+        labels: [<%- foodLabels %>],
+        datasets: [
+            {
+                data: [<%- foodNums %>]
+            }
+        ]
+		};
+		var ctx = document.getElementById("users").getContext("2d");
+		var options = {
+			scales: {
+				yAxes: [{
+					scaleLabel: {
+						display: true,
+						labelString: 'number of posts'
+					}
+				}]
+			}
+		};
+		var users = new Chart(ctx).Bar(data, options);
+	}
+	--></script>
+
+	
+  <body onload="displayBarChart()">
+   
+  <h1>Most Common Foods</h1>
+  <div class="box">
+    <canvas id="users" height="450" width="800"></canvas>
+  </div>
+</body>
+</html>
