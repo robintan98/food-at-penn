@@ -65,6 +65,9 @@ public class CreatePostsActivity extends AppCompatActivity {
         Date current = Calendar.getInstance().getTime();
         Post p = new Post(food.getText().toString(), description.getText().toString(),
                 locationFood.getText().toString(), current);
+        food.getText().clear();
+        description.getText().clear();
+        locationFood.getText().clear();
 
         posts.add(p);
     }
