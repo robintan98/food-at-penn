@@ -2,18 +2,23 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var logger = require('morgan');
 
 /* Use the MongoDB using Monk ORM
   Create a Monk connection object
   Monk is used for is simple scope and comprehensibility
-  Database is located at localhost:27017/nodeproject1
-  Note: May need to download MongoDB and create nodeproject1 db branch
+  Database is located at localhost:27017/usertest
+  Note: May need to download MongoDB and create usertest db branch
   @developer: Robin
+  
+  Create Monk connection object to db of posts
+  Database is located at localhost:27017/posttest
+  @developer: Hannah
 */
 var monk = require('monk');
-var db = monk('localhost:27017/nodeproject1');
-
+var db = monk('localhost:27017/usertest');
+var db1 = monk('localhost:27017/posttest');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -32,9 +37,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 /* Make db accessible to router
   Must be put above app.use(...indexrouter)
   @developer: Robin
+  
+  Add post db to accessibility
+  @developer: Hannah
 */
 app.use(function(req, res, next){
   req.db = db;
+  req.db1 = db1;
   next();
 });
 
