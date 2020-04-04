@@ -15,8 +15,6 @@ router.get('/register', function(req, res) {
 });
 
 /* GET login page.
-  Router to register page, where users can register accounts
-  @developer: Robin
 */
 router.get('/login', function(req, res) {
   res.render('login', { title: 'Login'});
@@ -38,6 +36,34 @@ router.get('/accounts', function(req, res) {
     });
   });
 });
+
+
+/* GET first graph page.
+  @developer: Hannah
+*/
+router.get('/graphs', function(req, res) {
+  var db1 = req.db1;
+  var collection = db1.get('postscollection');
+  collection.find({}, {}, function(e, docs) {
+    res.render('graphs', {
+      "graphs" : docs
+    });
+  });
+});
+
+/* GET second graph page.
+  @developer: Hannah
+*/
+router.get('/foodGraph', function(req, res) {
+  var db1 = req.db1;
+  var collection = db1.get('postscollection');
+  collection.find({}, {}, function(e, docs) {
+    res.render('foodGraph', {
+      "foodGraph" : docs
+    });
+  });
+});
+
 
 /* POST to Register
   Routes user to dashboard after registering an account
@@ -122,6 +148,22 @@ router.post('/login', function(req, res) {
     res.redirect("login");
   })
 
+});
+
+/* Router to first graph page.
+  @developer: Hannah
+*/
+router.post('/accounts', function(req, res) {
+  res.redirect('graphs');
+
+});
+
+/* Router to second graph page.
+  @developer: Hannah
+*/
+router.post('/graphs', function(req, res) {
+  res.redirect('foodGraph');
+  
 });
 
 module.exports = router;
