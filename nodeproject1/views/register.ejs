@@ -1,0 +1,30 @@
+<!--
+  HTML for Register page.
+  @developer: Robin
+!-->
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+
+  <!--
+      Form for registering accounts, action="/register"
+      Attributes: firstname, lastname, username, password
+      @developer: Robin
+    !-->
+  <body>
+    <h1><%= title %></h1>
+    <form id="formRegisterAccount" name="register" method="post" action="/register">
+      <input id="inputFirstName" type="text" placeholder="First Name" name="firstname" />
+      <input id="inputLastName" type="text" placeholder="Last Name" name="lastname" />
+      <input id="inputUsername" type="text" placeholder="Username" name="username" />
+      <input id="inputPassword" type="text" placeholder="Password" name="password" />
+      <button id="submitButton" type="submit">Submit</button>
+    </form>
+  </body>
+
+</html>

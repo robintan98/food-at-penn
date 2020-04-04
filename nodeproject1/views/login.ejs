@@ -1,0 +1,33 @@
+<!--
+  HTML for Login page.
+  @developer: Robin
+!-->
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+
+  <!--
+      Form for log account in, account="/login"
+      Checks if username and password matches
+      If it doesn't, send error code
+      If it does, redirect to homepage
+      If no username is found, redirect to login
+      Attributes: firstname, lastname, username, password
+      Also includes submit button of id=submitButton
+      @developer: Robin
+    !-->
+  <body>
+    <h1><%= title %></h1>
+    <form id="formLoginAccount" name="login" method="post" action="/login">
+      <input id="inputUsername" type="text" placeholder="Username" name="username" />
+      <input id="inputPassword" type="text" placeholder="Password" name="password" />
+      <button id="submitButton" type="submit">Submit</button>
+    </form>
+  </body>
+
+</html>
