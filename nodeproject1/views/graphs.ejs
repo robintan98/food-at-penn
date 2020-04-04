@@ -1,0 +1,88 @@
+<!--
+  HTML for Graphs page.
+  @developer: Hannah
+!-->
+
+<!DOCTYPE html>
+<html>
+
+
+
+  <head>
+    <title>Graphs</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><Graphs></h1>
+  </body>
+  
+    <body>
+	
+	<ul>
+      <%
+        var userMap =  new Map();
+		var userLabels = [];
+		var postNums = [];
+
+
+        for (i = 0; i < graphs.length; i++) {
+		   if (!userMap.has(graphs[i].user)) {
+			 userMap.set(graphs[i].user, 1);
+		   } else {
+		     userMap.set(graphs[i].user, userMap.get(graphs[i].user) + 1);
+			}
+			
+
+        } 
+		
+		userMap.forEach( (value, key) => {
+            userLabels.push('"' + key + '"');
+			postNums.push(value);     
+        });
+		
+
+      %>
+    </ul>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+	<script language="JavaScript"><!--
+ 
+  
+	function displayBarChart() {
+		var data = {
+        labels: [<%- userLabels %>],
+        datasets: [
+            {
+                data: [<%- postNums %>]
+            }
+        ]
+		};
+		var ctx = document.getElementById("users").getContext("2d");
+		var options = {
+			scales: {
+				yAxes: [{
+					scaleLabel: {
+						display: true,
+						labelString: 'number of posts'
+					}
+				}]
+			}
+		};
+		var users = new Chart(ctx).Bar(data, options);
+	}
+	
+	--></script>
+
+	
+  <body onload="displayBarChart();">
+   
+  <h1>Posts per User</h1>
+  <div class="box">
+    <canvas id="users" height="450" width="800"></canvas>
+  </div>
+  
+      <ul style="color:white; float: left;" class="nav navbar-nav">
+        <li><a href="/foodGraph"> See Next Graph  </a> </li>
+    </ul>
+</body>
+</html>
