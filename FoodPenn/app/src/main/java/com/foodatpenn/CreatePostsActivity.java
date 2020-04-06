@@ -1,0 +1,113 @@
+package com.foodatpenn;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.os.Bundle;
+import android.view.View;
+
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.foodpenn.R;
+
+public class CreatePostsActivity extends AppCompatActivity {
+
+    EditText food;
+    EditText description;
+    EditText locationFood;
+    private Button submitButton;
+    private ArrayList<Post> posts;
+    private int counter = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.create_posts_activity);
+
+        food = (EditText) findViewById(R.id.food);
+        description = (EditText) findViewById(R.id.description);
+        locationFood = (EditText) findViewById(R.id.locationFood);
+        submitButton = (Button) findViewById(R.id.submitButton);
+
+        if (getIntent().getSerializableExtra("RESULT") == null){
+            posts = new ArrayList<Post>();
+        }
+        else {
+            posts = (ArrayList<Post>) getIntent().getSerializableExtra("RESULT");
+            counter = posts.size();
+        }
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitButtonClicked();
+            }
+        });
+
+
+    }
+
+    private void submitButtonClicked() {
+        Date current = Calendar.getInstance().getTime();
+        Post p = new Post(food.getText().toString(), description.getText().toString(),
+                locationFood.getText().toString(), current, counter);
+        counter++;
+        food.getText().clear();
+        description.getText().clear();
+        locationFood.getText().clear();
+
+        posts.add(p);
+    }
+
+    public void moveToSeeAllPosts(View view) {
+
+
+        Intent i = new Intent(this, AllPostsActivity.class);
+        i.putExtra("RESULT", posts);
+        startActivityForResult(i, 2);
+    }
+
+    public void sortRecentPosts(View view) {
+
+        Collections.sort(posts, new Comparator<Post>() {
+            @Override
+            public int compare(Post post1, Post post2) {
+                if (post1.getDate().getTime() < post2.getDate().getTime()) {
+                    return 1;
+                }
+                else if (post1.getDate().getTime() == post2.getDate().getTime()) {
+                    return 0;
+                }
+                else {
+                    return -1;
+                }
+            }
+        });
+
+    }
+
+
+
+
+}
