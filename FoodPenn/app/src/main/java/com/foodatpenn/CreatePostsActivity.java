@@ -37,6 +37,7 @@ public class CreatePostsActivity extends AppCompatActivity {
     EditText description;
     EditText locationFood;
     private Button submitButton;
+
     private ArrayList<Post> posts;
     private int counter = 0;
 
@@ -49,6 +50,7 @@ public class CreatePostsActivity extends AppCompatActivity {
         description = (EditText) findViewById(R.id.description);
         locationFood = (EditText) findViewById(R.id.locationFood);
         submitButton = (Button) findViewById(R.id.submitButton);
+
 
         if (getIntent().getSerializableExtra("RESULT") == null){
             posts = new ArrayList<Post>();
@@ -71,6 +73,7 @@ public class CreatePostsActivity extends AppCompatActivity {
     private void submitButtonClicked() {
         Date current = Calendar.getInstance().getTime();
         Post p = new Post(food.getText().toString(), description.getText().toString(),
+
                 locationFood.getText().toString(), current, counter);
         counter++;
         food.getText().clear();
@@ -83,8 +86,10 @@ public class CreatePostsActivity extends AppCompatActivity {
     public void moveToSeeAllPosts(View view) {
 
 
+
         Intent i = new Intent(this, AllPostsActivity.class);
         i.putExtra("RESULT", posts);
+
         startActivityForResult(i, 2);
     }
 
@@ -106,8 +111,6 @@ public class CreatePostsActivity extends AppCompatActivity {
         });
 
     }
-
-
 
 
 }

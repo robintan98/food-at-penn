@@ -1,11 +1,13 @@
 package com.foodatpenn;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import java.util.List;
 
 public class AllPostsActivity extends AppCompatActivity {
 
+
     private ArrayList<Post> posts;
     private TextView textView;
     private String allPosts;
@@ -35,9 +38,12 @@ public class AllPostsActivity extends AppCompatActivity {
     EditText locationFood;
     EditText removeId;
 
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_posts_activity);
+
         posts = (ArrayList<Post>) getIntent().getSerializableExtra("RESULT");
 
 
@@ -137,4 +143,6 @@ public class AllPostsActivity extends AppCompatActivity {
 
     }
 }
+
+
 
