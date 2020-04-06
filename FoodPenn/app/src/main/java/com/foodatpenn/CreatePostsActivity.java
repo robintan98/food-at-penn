@@ -37,7 +37,9 @@ public class CreatePostsActivity extends AppCompatActivity {
     EditText description;
     EditText locationFood;
     private Button submitButton;
-    private List<Post> posts;
+
+    private ArrayList<Post> posts;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,14 @@ public class CreatePostsActivity extends AppCompatActivity {
         locationFood = (EditText) findViewById(R.id.locationFood);
         submitButton = (Button) findViewById(R.id.submitButton);
 
-        posts = new ArrayList<Post>();
+
+        if (getIntent().getSerializableExtra("RESULT") == null){
+            posts = new ArrayList<Post>();
+        }
+        else {
+            posts = (ArrayList<Post>) getIntent().getSerializableExtra("RESULT");
+            counter = posts.size();
+        }
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +73,9 @@ public class CreatePostsActivity extends AppCompatActivity {
     private void submitButtonClicked() {
         Date current = Calendar.getInstance().getTime();
         Post p = new Post(food.getText().toString(), description.getText().toString(),
-                locationFood.getText().toString(), current);
+
+                locationFood.getText().toString(), current, counter);
+        counter++;
         food.getText().clear();
         description.getText().clear();
         locationFood.getText().clear();
@@ -73,21 +84,12 @@ public class CreatePostsActivity extends AppCompatActivity {
     }
 
     public void moveToSeeAllPosts(View view) {
-        String allPosts = "";
-        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss zzzz");
 
-        for (int i = 0; i < posts.size(); i++) {
-            Date current = posts.get(i).getDate();
-            String date = df.format(current);
 
-            allPosts += date + "\n" +
-                    "Food is " + posts.get(i).getFood() + "\n"
-                    + "Description is " + posts.get(i).getDescription() + "\n"
-                    + "Location is " + posts.get(i).getLocation() + "\n" + "\n";
-        }
 
         Intent i = new Intent(this, AllPostsActivity.class);
-        i.putExtra("RESULT", allPosts);
+        i.putExtra("RESULT", posts);
+
         startActivityForResult(i, 2);
     }
 
@@ -109,35 +111,6 @@ public class CreatePostsActivity extends AppCompatActivity {
         });
 
     }
-
-   public class Post {
-       private String food1;
-       private String description1;
-       private String location1;
-       private Date date1;
-       public Post(String f, String d, String l, Date da) {
-           food1 = f;
-           description1 = d;
-           location1 = l;
-           date1 = da;
-       }
-
-       public String getFood() {
-           return food1;
-       }
-
-       public String getDescription() {
-           return description1;
-       }
-
-       public String getLocation() {
-           return location1;
-       }
-
-       public Date getDate() {
-           return date1;
-       }
-   }
 
 
 }
