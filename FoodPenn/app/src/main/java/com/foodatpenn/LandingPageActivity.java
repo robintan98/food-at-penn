@@ -37,6 +37,11 @@ public class LandingPageActivity extends AppCompatActivity {
         startActivityForResult(i, 2);
     }
 
+    public void moveToPosts(View view) {
+        Intent i = new Intent(this, CreatePostsActivity.class);
+        startActivityForResult(i, 2);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
