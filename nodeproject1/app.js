@@ -19,6 +19,7 @@ var logger = require('morgan');
 var monk = require('monk');
 var db = monk('localhost:27017/usertest');
 var db1 = monk('localhost:27017/posttest');
+//'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 

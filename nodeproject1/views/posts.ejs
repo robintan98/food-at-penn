@@ -1,43 +1,41 @@
 <!--
-  HTML for Accounts page.
-  @developer: Robin and Hannah
+  HTML for all posts page.
+  @developer: Hannah
 !-->
 
 <!DOCTYPE html>
 <html>
 
   <head>
-    <title>Accounts</title>
+    <title>All Posts</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
 
   <body>
-    <h1>Accounts</h1>
+    <h1>All posts</h1>
 
     <!--
-      List display of current registered users for admin viewage
-      @developer: Robin
 	  
-	  Add button for redirection to data visualizations
+	  Display all posts. Add button for redirection to data visualizations
 	  @developer: Hannah
     !-->
-    <h2>Your posts</h2>
+    <h2>All posts</h2>
     <ul>
       <%
         var list = '';
-	
 		
 		for (i = 0; i < posts.length; i++) {
-		  if (posts[i].user == user) {
+		  
 			list += '<li>' + 
                    'Post ID: ' + i.toString() + '<br>' + 
+				   'User: ' + posts[i].user + '<br>' + 
                    'Weekday: ' + posts[i].weekday + '<br>' + 
                    'Time: ' + posts[i].time + '<br>' + 
                    'Food type: ' + posts[i].food + '<br>' +
                    'Location: ' + posts[i].location + '<br>' + 
                    '</li>';
 		   
-		  }
+		  
           
         } 
 		

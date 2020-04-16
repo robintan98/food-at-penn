@@ -1,0 +1,50 @@
+<!--
+  HTML for Admin Accounts page.
+  @developer: Hannah
+!-->
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Accounts</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+
+  <body>
+    <h1>Acccounts</h1>
+
+    <!--
+      List display of current registered users for admin viewage
+      @developer: Robin
+	  
+	  Add button for redirection to data visualizations
+	  @developer: Hannah
+    !-->
+    <h2>Current Registered Users</h2>
+    <ul>
+      <%
+        var list = '';
+		
+        for (i = 0; i < accounts.length; i++) {
+          list += '<li>' + 
+                   'User Number: ' + i.toString() + '<br>' + 
+                   'First Name: ' + accounts[i].firstname + '<br>' + 
+                   'Last Name: ' + accounts[i].lastname + '<br>' + 
+                   'Username: ' + accounts[i].username + '<br>' +
+                   'Password: ' + accounts[i].password + '<br>' + 
+                   '</li>';
+        } 
+		
+      %>
+      <%- list %>
+    </ul>
+
+    <ul style="color:white; float: left;" class="nav navbar-nav">
+        <li><a href="/posts"> See all Posts and Data Visualizations  </a> </li>
+    </ul>
+
+
+  </body>
+
+</html>

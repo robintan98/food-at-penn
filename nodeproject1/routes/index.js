@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var current = "";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -25,18 +26,45 @@ router.get('/login', function(req, res) {
   Note: From non-admin end, should not be able to see current accounts, mainly for
   development purposes
   Extracts db object from request, fill docs variable with accounts data, do page render
-  @developer: Robin
+  @developer: Robin and Hannah
 */
 router.get('/accounts', function(req, res) {
-  var db = req.db;
-  var collection = db.get('accountscollection');
-  collection.find({}, {}, function(e, docs) {
+	var db1 = req.db1;
+	var collection = db1.get('postscollection');
+    collection.find({}, {}, function(e, docs) {
     res.render('accounts', {
-      "accounts" : docs
+	  accounts : {},
+	  user : current,
+      posts : docs,
+    });
+    });  
+});
+
+/* GET accounts page for admin.
+  @developer: Hannah
+*/
+router.get('/accountsAdmin', function(req, res) {
+	var db = req.db;
+	var collection = db.get('accountscollection');
+    collection.find({}, {}, function(e, docs) {
+    res.render('accountsAdmin', {
+      accounts : docs,
+    });
+	});
+});	
+
+/* GET all posts page.
+  @developer: Hannah
+*/
+router.get('/posts', function(req, res) {
+  var db1 = req.db1;
+  var collection = db1.get('postscollection');
+  collection.find({}, {}, function(e, docs) {
+    res.render('posts', {
+      "posts" : docs
     });
   });
 });
-
 
 /* GET first graph page.
   @developer: Hannah
@@ -107,7 +135,12 @@ router.post('/register', function(req, res) {
       }
       else {
           // Else, redirect to dashboard
-          res.redirect("accounts");
+		  current = username;
+          if (username == "hwang") {
+				res.redirect("accountsAdmin");
+		} else {
+				res.redirect("accounts");
+		}
       }
   });
 
@@ -140,7 +173,13 @@ router.post('/login', function(req, res) {
             res.send("Password is incorrect!");
           } else {
             // Redirect to dashboard if username and password match
-            res.redirect("accounts");
+			current = username;
+			if (username == "hwang") {
+				res.redirect("accountsAdmin");
+			} else {
+				res.redirect("accounts");
+			}
+            
           }
         }
     });
@@ -150,12 +189,26 @@ router.post('/login', function(req, res) {
 
 });
 
+/* Router to from admin page.
+  @developer: Hannah
+*/
+router.post('/accountsAdmin', function(req, res) {
+  res.redirect('posts');
+});
+
 /* Router to first graph page.
   @developer: Hannah
 */
 router.post('/accounts', function(req, res) {
   res.redirect('graphs');
 
+});
+
+/* Router to first graph page from admin page.
+  @developer: Hannah
+*/
+router.post('/posts', function(req, res) {
+  res.redirect('graphs');
 });
 
 /* Router to second graph page.
