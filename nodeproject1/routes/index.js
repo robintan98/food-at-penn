@@ -29,15 +29,12 @@ router.get('/login', function(req, res) {
   @developer: Robin and Hannah
 */
 router.get('/accounts', function(req, res) {
-	var db1 = req.db1;
-	var collection = db1.get('postscollection');
-    collection.find({}, {}, function(e, docs) {
+	var docs = req.docs;
     res.render('accounts', {
 	  accounts : {},
 	  user : current,
       posts : docs,
-    });
-    });  
+    }); 
 });
 
 /* GET accounts page for admin.
@@ -57,39 +54,30 @@ router.get('/accountsAdmin', function(req, res) {
   @developer: Hannah
 */
 router.get('/posts', function(req, res) {
-  var db1 = req.db1;
-  var collection = db1.get('postscollection');
-  collection.find({}, {}, function(e, docs) {
+	var docs = req.docs;
     res.render('posts', {
       "posts" : docs
     });
-  });
 });
 
 /* GET first graph page.
   @developer: Hannah
 */
 router.get('/graphs', function(req, res) {
-  var db1 = req.db1;
-  var collection = db1.get('postscollection');
-  collection.find({}, {}, function(e, docs) {
+	var docs = req.docs;
     res.render('graphs', {
       "graphs" : docs
     });
-  });
 });
 
 /* GET second graph page.
   @developer: Hannah
 */
 router.get('/foodGraph', function(req, res) {
-  var db1 = req.db1;
-  var collection = db1.get('postscollection');
-  collection.find({}, {}, function(e, docs) {
+	var docs = req.docs;
     res.render('foodGraph', {
       "foodGraph" : docs
     });
-  });
 });
 
 

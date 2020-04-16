@@ -18,8 +18,21 @@ var logger = require('morgan');
 */
 var monk = require('monk');
 var db = monk('localhost:27017/usertest');
-var db1 = monk('localhost:27017/posttest');
-//'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority');
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+var postDocs = {};
+client.connect(err => {
+  var db1 = client.db('postDB').collection('postscollection');
+  db1.find({}).toArray(function(err, docs) {
+    postDocs = docs;
+    console.log(postDocs);
+  });
+  
+  console.log('received');
+  client.close();
+});
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -44,7 +57,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 */
 app.use(function(req, res, next){
   req.db = db;
-  req.db1 = db1;
+  req.docs = postDocs;
   next();
 });
 
