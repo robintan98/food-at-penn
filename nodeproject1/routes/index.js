@@ -116,14 +116,13 @@ router.post('/register', function(req, res) {
         array.forEach(function(item) {
           if (item.username == username) {
             console.log('Account already exists!');
-
             shouldInsert = false;
           }
         });
       }
     });
 
-    // Querying database to register and check repeated accounts are asynchronous
+    // Querying database to register and check repeated accounts is asynchronous
     // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
     // Before the account can be registered
     setTimeout(function() {
@@ -158,42 +157,52 @@ router.post('/register', function(req, res) {
   Routes user to dashboard after validating username and password
   Redirects to error code if username and password do not match
   Redirects to login if no username is found
-  Note: May need to create the 'accountscollection' db beforehand for dev purposes 
   @developer: Robin
 */
 router.post('/login', function(req, res) {
 
-  var db = req.db;
-
-  // Attributes = attributes from req.body
   var username = req.body.username;
   var password = req.body.password;
 
-  // Collection name is 'accountscollection'
-  var collection = db.get('accountscollection');
+  const MongoClient = require('mongodb').MongoClient;
+  const uri = 'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority';
+  const client = new MongoClient(uri, { useNewUrlParser: true });
 
-  // Check DB to validate username and password
-  collection.find().then(collection => {
-    collection.forEach(function(account) {
-        if (account.username == username) {
-          // If username and password does not match with account's password, redirect to error code
-          if (account.password != password) {
-            res.send("Password is incorrect!");
-          } else {
-            // Redirect to dashboard if username and password match
-			current = username;
-			if (username == "hwang") {
-				res.redirect("accountsAdmin");
-			} else {
-				res.redirect("accounts");
-			}
-            
+  client.connect(err => {
+    var accountsDB = client.db('accountsDB');
+    var accountsCollection = accountsDB.collection('accountscollection');
+    var shouldLogin = false;
+
+    // Check DB if username and password align
+    accountsCollection.find().toArray(function(err, array) {
+      if (err) {
+        console.log('Unable to check is username and password aligns!');
+      } else {
+        array.forEach(function(item) {
+          if (item.username == username) {
+            if (item.password == password) {
+              shouldLogin = true;
+              console.log('Username and password match!');
+            } 
           }
-        }
+        });
+      }
     });
-    // If no username in the collection matches, then redirect to login page
-    res.redirect("login");
-  })
+
+    // Querying database to check if username and password matches is asynchronous
+    // As a result, a 1000 ms delay is needed to check the database for matching password,
+    // Before the user can login
+    setTimeout(function() {
+      if (!shouldLogin) {
+        console.log('Username and password don\'t match!');
+        res.redirect('login');
+      } else {
+        console.log('Redirecting to account!');
+        res.redirect('accounts');
+      }
+    }, 1000);
+
+  });
 
 });
 

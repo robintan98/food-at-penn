@@ -23,10 +23,6 @@ const uri = "mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryW
 const client = new MongoClient(uri, { useNewUrlParser: true });
 var postDocs = {};
 var accountsDB;
-// accountsDB.find({}).toArray(function(err, docs) {
-//   postDocs = docs;
-//   console.log(postDocs);
-// });
 
 client.connect(err => {
   var postsDB = client.db('postDB').collection('postscollection');
@@ -36,12 +32,6 @@ client.connect(err => {
   });
 
   accountsDB = client.db('accountsDB');
-
-  // accountsDB = client.db('accountsDB').collection('accountscollection');
-  // accountsDB.find({}).toArray(function(err, docs) {
-  //   postDocs = docs;
-  //   console.log(postDocs);
-  // });
 
   console.log('received');
   client.close();
