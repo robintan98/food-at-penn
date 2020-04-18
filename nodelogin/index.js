@@ -56,13 +56,16 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 
 			var name = post_data.name;
 			var email = post_data.email;
+			var year = post_data.year;
+			var phone = post_data.phone;
 
 			var insertJson = {
 				'email' : email,
 				'password': password,
 				'salt': salt,
-				'name': name
-
+				'name': name,
+				'year': year,
+				'phone': phone
 			};
 			var db = client.db('nodelogin');
 
@@ -121,6 +124,59 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 
 		});
 
+		//Contains
+		app.post('/contains', (request, response, next) => {
+			var post_data = request.body;
+
+
+			var email = post_data.email;
+
+			var db = client.db('nodelogin');
+
+			db.collection('user').find({'email':email}).count(function(err, number) {
+				if (number == 0) {
+
+					response.json('false');
+					console.log('false');
+
+				} else {
+					response.json('true');
+					console.log('true');
+				}
+			})
+
+		});
+
+		//Get User
+		app.post('/getUser', (request, response, next) => {
+			var post_data = request.body;
+
+
+			var email = post_data.email;
+
+
+
+			var db = client.db('nodelogin');
+
+			db.collection('user').find({'email':email}).count(function(err, number) {
+				if (number == 0) {
+
+					response.json({'status': 'email not found'});
+					console.log('status: email not found');
+
+				} else {
+					db.collection('user')
+						.findOne({'email':email}, function(err, user) {
+
+
+							response.json(user);
+							console.log('User found');
+
+						})
+				}
+			})
+
+		});
 		//Start web server
 		app.listen(3000, () => {
 			console.log('Connected to MongoDB Server, WebService on port 3000');

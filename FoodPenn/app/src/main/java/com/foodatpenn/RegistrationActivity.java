@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
 import com.foodatpenn.data.RegisterStoreDataLocal;
+import com.foodatpenn.data.RegistrationStoreMongo;
 
 public class RegistrationActivity extends AppCompatActivity {
     RegistrationStore users;
@@ -22,7 +23,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        users = RegisterStoreDataLocal.getInstance();
+        users = RegistrationStoreMongo.getInstance();
         userName = findViewById(R.id.newUsername);
         password = findViewById(R.id.newPassword);
         confirmPassword = findViewById(R.id.newPasswordConfirm);

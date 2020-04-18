@@ -2,10 +2,14 @@ package com.foodatpenn.data;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.foodatpenn.MainActivity;
 import com.foodatpenn.MyApplication;
+import com.foodatpenn.Retrofit.IMyService;
+import com.foodatpenn.Retrofit.RetrofitClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,16 +25,33 @@ import java.io.PrintWriter;
 import java.nio.Buffer;
 import java.util.HashMap;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+
 public class RegistrationStoreMongo implements RegistrationStore {
     private static final String FILE_NAME = "data.txt";
     HashMap<String, User> data;
     static RegistrationStore instance = new RegistrationStoreMongo();
     Context currentContext;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IMyService iMyService;
+    boolean status;
+    User currentUser, defaultUser;
+
 
 
     private RegistrationStoreMongo () {
+
+        defaultUser = new User("waiting on server", "", "waiting on server", 1111, "waiting on server");
+        currentUser = defaultUser;
+
         data  = new HashMap<String, User>();
         currentContext = MyApplication.getAppContext();
+
+        status = false;
 //        File root = currentContext.getExternalFilesDir(null);
 //        File file = new File(root, "data.txt");
         FileInputStream fis = null;
@@ -59,11 +80,17 @@ public class RegistrationStoreMongo implements RegistrationStore {
             }
         }
 
+        //Init service
+        Retrofit retrofitClient = RetrofitClient.getInstance();
+        iMyService = retrofitClient.create(IMyService.class);
+
     }
 
     public static RegistrationStore getInstance() {
         return instance;
     }
+
+
 
     @Override
     public void addUser(String email, String password, String name, int year, String phone) {
@@ -72,6 +99,19 @@ public class RegistrationStoreMongo implements RegistrationStore {
 
         String text = newUser.toString();
         FileOutputStream fos = null;
+
+
+
+        compositeDisposable.add(iMyService.registerUser(email, name, password, Integer.toString(year), phone)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+
+                    }
+                }));
+
 
         try {
             fos = currentContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
@@ -94,6 +134,10 @@ public class RegistrationStoreMongo implements RegistrationStore {
 
     }
 
+    private void setStatus(boolean bool) {
+        status = bool;
+    }
+
     @Override
     public boolean verifyLogin(String name, String password) {
         if (name == null) {
@@ -103,11 +147,32 @@ public class RegistrationStoreMongo implements RegistrationStore {
         if (user == null) {
             return false;
         }
-        String passwordActual = user.getPassword();
-        if (password == null || passwordActual == null || !password.equals(passwordActual)) {
+
+        if (password == null) {
             return false;
         }
-        return true;
+
+        final String serverResponse;
+        final boolean returnVal;
+
+
+        compositeDisposable.add(iMyService.loginUser(name, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+                        if (response.contains("successful")) {
+                            setStatus(true);
+                        }
+                    }
+                }));
+
+        if (status == true) {
+            status = false;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -167,5 +232,11 @@ public class RegistrationStoreMongo implements RegistrationStore {
             returnVal += data.get(userEmail).toString() + "\n";
         }
         return returnVal;
+    }
+
+    class AndroidSucksException extends IllegalStateException {
+        public AndroidSucksException (String s) {
+            super(s);
+        }
     }
 }

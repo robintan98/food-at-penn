@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.foodatpenn.Retrofit.IMyService;
 import com.foodatpenn.Retrofit.RetrofitClient;
 import com.foodatpenn.data.RegistrationStore;
 import com.foodatpenn.data.RegisterStoreDataLocal;
+import com.foodatpenn.data.RegistrationStoreMongo;
 
 
 import io.reactivex.Observer;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         login = (Button) findViewById(R.id.login);
         createAcct = (Button) findViewById(R.id.createAcct);
-        registered = RegisterStoreDataLocal.getInstance();
+        registered = RegistrationStoreMongo.getInstance();
 
 
         //Init service
@@ -68,26 +70,15 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra("Email", userName);
             startActivityForResult(i, 2);
         } else {
-//            Toast.makeText(
-//                    this,
-//                    "Username or password incorrect",
-//                    Toast.LENGTH_LONG
-//            ).show();
+            Toast.makeText(
+                    this,
+                    "Username or password incorrect",
+                    Toast.LENGTH_LONG
+            ).show();
         }
     }
 
     private boolean validate (String userName, String passString) {
-        Log.v("email:", userName);
-        Log.v("password", passString);
-        compositeDisposable.add(iMyService.loginUser(userName, passString)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>(){
-                    @Override
-                    public void accept(String response) throws Exception {
-                        Toast.makeText(MainActivity.this, ""+response, Toast.LENGTH_LONG).show();
-                    }
-                }));
         return registered.verifyLogin(userName, passString);
     }
 

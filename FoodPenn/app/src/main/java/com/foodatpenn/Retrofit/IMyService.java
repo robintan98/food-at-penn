@@ -11,11 +11,21 @@ public interface IMyService {
     @FormUrlEncoded
     Observable<String> registerUser(@Field("email") String email,
                                     @Field("name") String name,
-                                    @Field("password") String password);
+                                    @Field("password") String password,
+                                    @Field("year") String year,
+                                    @Field("phone") String phone);
 
     @POST("login")
     @FormUrlEncoded
     Observable<String> loginUser(@Field("email") String email,
                                     @Field("password") String name);
+
+    @POST("contains")
+    @FormUrlEncoded
+    Observable<String> contains(@Field("email") String email);
+
+    @POST("getUser")
+    @FormUrlEncoded
+    Observable<String> getUser(@Field("email") String email);
 
 }
