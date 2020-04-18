@@ -7,42 +7,41 @@
 <html>
 
   <head>
-    <title>Accounts</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
 
   <body>
-    <h1>Welcome, <%= userFirstName %> !</h1>
+    <h1>Welcome, <%= userFirstName %>!</h1>
 
 
     <!--
-      List display of current registered users for admin viewage
+      List of posts for the logged-in user
       @developer: Robin
 	  
       Add button for redirection to data visualizations
       @developer: Hannah
     !-->
     <h2>Your posts</h2>
-    <ul>
-      <%
-        var list = '';
+    <%
+      var list = '';
+      if (posts.length == 0) {
+
+      } else {
         for (i = 0; i < posts.length; i++) {
           if (posts[i].user == user) {
-          list += '<li>' + 
+          list += '<ul><li>' + 
                       'Post ID: ' + i.toString() + '<br>' + 
                       'Weekday: ' + posts[i].weekday + '<br>' + 
                       'Time: ' + posts[i].time + '<br>' + 
                       'Food type: ' + posts[i].food + '<br>' +
                       'Location: ' + posts[i].location + '<br>' + 
-                      '</li>';
-          
-          }
-              
-            } 
-		
-      %>
-      <%- list %>
-    </ul>
+                      '</li></ul>';
+          }     
+        } 
+      }
+    %>
+    
+    <%- list %>
 
     <ul style="color:white; float: left;" class="nav navbar-nav">
         <li><a href="/graphs"> See Data Visualizations  </a> </li>

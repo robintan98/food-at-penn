@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
+// Current user and first name to display on the accounts page
 var current = "";
 var currentFirstName = "";
 
@@ -31,10 +33,10 @@ router.get('/login', function(req, res) {
   Extracts db object from request, fill docs variable with accounts data, do page render
   @developer: Robin and Hannah
 */
-router.get('/accounts', function(req, res) {
+router.get('/account', function(req, res) {
   var docs = req.docs;
   console.log(docs);
-  res.render('accounts', {
+  res.render('account', {
     accounts : {},
     user : current,
     posts : docs,
@@ -88,7 +90,9 @@ router.get('/foodGraph', function(req, res) {
 
 /* POST to Register
   Routes user to dashboard after registering an account
-  Also inserts account information into MongoDB
+  Checks if that username is already registered in the database
+  If so, then refreshes register page
+  If not, inserts account information into MongoDB
   @developer: Robin
 */
 router.post('/register', function(req, res) {
@@ -146,7 +150,7 @@ router.post('/register', function(req, res) {
             console.log('Unable to insert document');
           } else {
             console.log('Account registered!');
-            res.redirect('accounts');
+            res.redirect('login');
           }
         });
       }
@@ -158,8 +162,7 @@ router.post('/register', function(req, res) {
 
 /* POST to Login
   Routes user to dashboard after validating username and password
-  Redirects to error code if username and password do not match
-  Redirects to login if no username is found
+  Redirects to login page again if username doesn't exist or username and password do not match
   @developer: Robin
 */
 router.post('/login', function(req, res) {
@@ -195,8 +198,8 @@ router.post('/login', function(req, res) {
     });
 
     // Querying database to check if username and password matches is asynchronous
-    // As a result, a 1000 ms delay is needed to check the database for matching password,
-    // Before the user can login
+    // As a result, a 1000 ms delay is needed to check the database for matching password before the user can login
+    // If they don't match, redirects back to login page
     setTimeout(function() {
       if (!shouldLogin) {
         console.log('Username and password don\'t match!');
@@ -205,7 +208,7 @@ router.post('/login', function(req, res) {
         current = username;
         currentFirstName = userFirstName;
         console.log('Redirecting to account!');
-        res.redirect('accounts');
+        res.redirect('account');
       }
     }, 1000);
 
@@ -223,7 +226,7 @@ router.post('/accountsAdmin', function(req, res) {
 /* Router to first graph page.
   @developer: Hannah
 */
-router.post('/accounts', function(req, res) {
+router.post('/account', function(req, res) {
   res.redirect('graphs');
 
 });
