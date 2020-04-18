@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var current = "";
+var currentFirstName = "";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -31,11 +32,13 @@ router.get('/login', function(req, res) {
   @developer: Robin and Hannah
 */
 router.get('/accounts', function(req, res) {
-	var docs = req.docs;
+  var docs = req.docs;
+  console.log(docs);
   res.render('accounts', {
     accounts : {},
     user : current,
     posts : docs,
+    userFirstName : currentFirstName
   }); 
 });
 
@@ -46,9 +49,9 @@ router.get('/accountsAdmin', function(req, res) {
 	var db = req.db;
 	var collection = db.get('accountscollection');
   collection.find({}, {}, function(e, docs) {
-  res.render('accountsAdmin', {
-    accounts : docs,
-  });
+    res.render('accountsAdmin', {
+      accounts : docs,
+    });
 	});
 });	
 
@@ -138,7 +141,7 @@ router.post('/register', function(req, res) {
                            phone: phone,
                            school: school,
                            year: year};
-        accountsCollection.insertOne(insertedDoc, function(err){
+          accountsCollection.insertOne(insertedDoc, function(err){
           if (err) {
             console.log('Unable to insert document');
           } else {
@@ -172,6 +175,7 @@ router.post('/login', function(req, res) {
     var accountsDB = client.db('accountsDB');
     var accountsCollection = accountsDB.collection('accountscollection');
     var shouldLogin = false;
+    var userFirstName = "";
 
     // Check DB if username and password align
     accountsCollection.find().toArray(function(err, array) {
@@ -182,6 +186,7 @@ router.post('/login', function(req, res) {
           if (item.username == username) {
             if (item.password == password) {
               shouldLogin = true;
+              userFirstName = item.firstName;
               console.log('Username and password match!');
             } 
           }
@@ -197,6 +202,8 @@ router.post('/login', function(req, res) {
         console.log('Username and password don\'t match!');
         res.redirect('login');
       } else {
+        current = username;
+        currentFirstName = userFirstName;
         console.log('Redirecting to account!');
         res.redirect('accounts');
       }
