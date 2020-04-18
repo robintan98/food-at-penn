@@ -110,10 +110,6 @@ public class RegistrationStoreMongo implements RegistrationStore {
         if (name == null) {
             return false;
         }
-        User user = data.get(name);
-        if (user == null) {
-            return false;
-        }
 
         if (password == null) {
             return false;
