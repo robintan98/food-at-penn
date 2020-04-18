@@ -11,6 +11,10 @@ import com.foodatpenn.MyApplication;
 import com.foodatpenn.Retrofit.IMyService;
 import com.foodatpenn.Retrofit.RetrofitClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.Buffer;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -38,7 +43,7 @@ public class RegistrationStoreMongo implements RegistrationStore {
     Context currentContext;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IMyService iMyService;
-    boolean status;
+    boolean status, containsStatus;
     User currentUser, defaultUser;
 
 
@@ -52,33 +57,10 @@ public class RegistrationStoreMongo implements RegistrationStore {
         currentContext = MyApplication.getAppContext();
 
         status = false;
+        containsStatus = true;
 //        File root = currentContext.getExternalFilesDir(null);
 //        File file = new File(root, "data.txt");
-        FileInputStream fis = null;
-        try {
-            fis = currentContext.openFileInput(FILE_NAME);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
 
-            String text;
-
-            while ((text = br.readLine()) != null) {
-                User newUser = User.fromString(text);
-                if (newUser != null) {
-                    data.put(newUser.getEmail(), newUser);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
         //Init service
         Retrofit retrofitClient = RetrofitClient.getInstance();
@@ -113,29 +95,14 @@ public class RegistrationStoreMongo implements RegistrationStore {
                 }));
 
 
-        try {
-            fos = currentContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
-            String writeText = this.currentUsersString() + text;
-            fos.write(writeText.getBytes());
-
-            Toast.makeText(currentContext, "Saved to " + currentContext.getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-
     }
 
-    private void setStatus(boolean bool) {
-        status = bool;
+    private void setStatus(boolean bool, int statusVar) {
+        if (statusVar == 1) {
+            status = bool;
+        } else {
+            containsStatus = bool;
+        }
     }
 
     @Override
@@ -163,67 +130,119 @@ public class RegistrationStoreMongo implements RegistrationStore {
                     @Override
                     public void accept(String response) throws Exception {
                         if (response.contains("successful")) {
-                            setStatus(true);
+                            setStatus(true, 1);
+
                         }
                     }
                 }));
-
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (status == true) {
             status = false;
+            currentUser = defaultUser;
+            getLoggedInUser(name);
+
             return true;
         }
         return false;
     }
 
+    private void getLoggedInUser(String email) {
+        compositeDisposable.add(iMyService.getUser(email)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+                        setCurrentUser(response);
+                    }
+                }));
+    }
+
+    private void setCurrentUser(String o) {
+        try {
+            JSONObject jObj = new JSONObject(o);
+            Iterator<String> iter = jObj.keys();
+            while (iter.hasNext()) {
+                String key = iter.next();
+                Log.v(key, jObj.get(key).toString());
+            }
+            String email = jObj.getString("email");
+            String name = jObj.getString("name");
+            String year = jObj.getString("year");
+            String phone = jObj.getString("phone");
+            User user = new User(email, "", name, Integer.valueOf(year), phone);
+            currentUser = user;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            currentUser = defaultUser;
+        }
+    }
+
     @Override
     public boolean accountExists(String name) {
         if (name != null) {
-            return data.containsKey(name);
+            compositeDisposable.add(iMyService.contains(name)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String response) throws Exception {
+                            if (response.contains("false")) {
+                                setStatus(false, 2);
+                            }
+                        }
+                    }));
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (!containsStatus) {
+                status = true;
+                currentUser = defaultUser;
+                return false;
+            }
+            return true;
         }
+
         throw new NullPointerException("Null username");
     }
 
     @Override
     public String getName(String email) {
-        return data.get(email).getName();
+        return currentUser.getName();
     }
 
     @Override
     public int getClassYear(String email) {
-        return data.get(email).getClassYear();
+        return currentUser.getClassYear();
     }
 
     @Override
     public String getPhone(String email) {
-        return data.get(email).getPhoneNumber();
+        return currentUser.getPhoneNumber();
     }
 
     @Override
     public void modifyUser(String email, String name, int year, String phone) {
-        User currentUser = data.get(email);
+
         currentUser.setName(name);
         currentUser.setClassYear(year);
         currentUser.setPhoneNumber(phone);
 
-        FileOutputStream fos = null;
+        compositeDisposable.add(iMyService.modifyUser(email, name, Integer.toString(year), phone)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
 
-        try {
-            fos = currentContext.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
-            String writeText = this.currentUsersString();
-            fos.write(writeText.getBytes());
-
-            Toast.makeText(currentContext, "Saved to " + currentContext.getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+                    }
+                }));
     }
 
     private String currentUsersString() {
@@ -234,9 +253,4 @@ public class RegistrationStoreMongo implements RegistrationStore {
         return returnVal;
     }
 
-    class AndroidSucksException extends IllegalStateException {
-        public AndroidSucksException (String s) {
-            super(s);
-        }
-    }
 }

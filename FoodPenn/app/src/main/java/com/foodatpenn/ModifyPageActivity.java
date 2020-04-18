@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
 import com.foodatpenn.data.RegisterStoreDataLocal;
+import com.foodatpenn.data.RegistrationStoreMongo;
 
 public class ModifyPageActivity extends AppCompatActivity {
     //Confirms password before redirecting to the actual page to modify your data
@@ -26,7 +27,7 @@ public class ModifyPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.modify_password_confirm_activity);
         userName = this.getIntent().getStringExtra("Email");
-        rs = RegisterStoreDataLocal.getInstance();
+        rs = RegistrationStoreMongo.getInstance();
         centerPasswordModifyConfirm = findViewById(R.id.modifyConfirmPassword);
         failedLogins = 0;
         Log.v("Success", "Made it to ModifyPageActivity");

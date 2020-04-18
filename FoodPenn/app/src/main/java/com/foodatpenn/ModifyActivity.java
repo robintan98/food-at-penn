@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
 import com.foodatpenn.data.RegisterStoreDataLocal;
+import com.foodatpenn.data.RegistrationStoreMongo;
 
 public class ModifyActivity extends AppCompatActivity {
     RegistrationStore users;
@@ -23,7 +24,7 @@ public class ModifyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_info);
-        users = RegisterStoreDataLocal.getInstance();
+        users = RegistrationStoreMongo.getInstance();
         userName = findViewById(R.id.currentEmail);
         name = findViewById(R.id.modifyName);
         phone = findViewById(R.id.modifyPhone);

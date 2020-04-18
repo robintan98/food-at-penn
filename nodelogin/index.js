@@ -177,6 +177,40 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 			})
 
 		});
+
+		//Modify User
+		app.post('/modify', (request, response, next) => {
+			var post_data = request.body;
+
+
+			var name = post_data.name;
+			var email = post_data.email;
+			var year = post_data.year;
+			var phone = post_data.phone;
+
+			var db = client.db('nodelogin');
+
+			db.collection('user').find({'email':email}).count(function(err, number) {
+				if (number == 0) {
+
+					response.json({'status': 'email not found'});
+					console.log('status: email not found');
+
+				} else {
+					db.collection('user')
+						.findOne({'email':email}, function(err, user) {
+
+							user['name'] = name;
+							user['year'] = year;
+							user['phone'] = phone;
+							response.json('User Modified');
+							console.log('User found');
+
+						})
+				}
+			})
+
+		});
 		//Start web server
 		app.listen(3000, () => {
 			console.log('Connected to MongoDB Server, WebService on port 3000');

@@ -28,4 +28,11 @@ public interface IMyService {
     @FormUrlEncoded
     Observable<String> getUser(@Field("email") String email);
 
+    @POST("modify")
+    @FormUrlEncoded
+    Observable<String> modifyUser(@Field("email") String email,
+                                    @Field("name") String name,
+                                    @Field("year") String year,
+                                    @Field("phone") String phone);
+
 }
