@@ -4,14 +4,27 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Button;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.foodpenn.R;
+import com.foodatpenn.Retrofit.IMyService;
+import com.foodatpenn.Retrofit.RetrofitClient;
 import com.foodatpenn.data.RegistrationStore;
 import com.foodatpenn.data.RegisterStoreDataLocal;
+import com.foodatpenn.data.RegistrationStoreMongo;
+
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
     private EditText userEmail;
@@ -19,6 +32,16 @@ public class MainActivity extends AppCompatActivity {
     private Button login;
     private Button createAcct;
     private RegistrationStore registered;
+
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IMyService iMyService;
+
+    @Override
+    protected void onStop() {
+        compositeDisposable.clear();
+        super.onStop();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +52,13 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         login = (Button) findViewById(R.id.login);
         createAcct = (Button) findViewById(R.id.createAcct);
-        registered = RegisterStoreDataLocal.getInstance();
+        registered = RegistrationStoreMongo.getInstance();
+
+
+        //Init service
+        Retrofit retrofitClient = RetrofitClient.getInstance();
+        iMyService = retrofitClient.create(IMyService.class);
+
     }
 
     public void loginAttempt(View view) {
