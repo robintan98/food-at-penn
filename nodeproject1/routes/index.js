@@ -16,6 +16,8 @@ router.get('/register', function(req, res) {
 });
 
 /* GET login page.
+  Router to login page, where users can log in with their accounts
+  @developer: Robin
 */
 router.get('/login', function(req, res) {
   res.render('login', { title: 'Login'});
@@ -30,11 +32,11 @@ router.get('/login', function(req, res) {
 */
 router.get('/accounts', function(req, res) {
 	var docs = req.docs;
-    res.render('accounts', {
-	  accounts : {},
-	  user : current,
-      posts : docs,
-    }); 
+  res.render('accounts', {
+    accounts : {},
+    user : current,
+    posts : docs,
+  }); 
 });
 
 /* GET accounts page for admin.
@@ -43,10 +45,10 @@ router.get('/accounts', function(req, res) {
 router.get('/accountsAdmin', function(req, res) {
 	var db = req.db;
 	var collection = db.get('accountscollection');
-    collection.find({}, {}, function(e, docs) {
-    res.render('accountsAdmin', {
-      accounts : docs,
-    });
+  collection.find({}, {}, function(e, docs) {
+  res.render('accountsAdmin', {
+    accounts : docs,
+  });
 	});
 });	
 
@@ -55,9 +57,9 @@ router.get('/accountsAdmin', function(req, res) {
 */
 router.get('/posts', function(req, res) {
 	var docs = req.docs;
-    res.render('posts', {
-      "posts" : docs
-    });
+  res.render('posts', {
+    "posts" : docs
+  });
 });
 
 /* GET first graph page.
@@ -65,9 +67,9 @@ router.get('/posts', function(req, res) {
 */
 router.get('/graphs', function(req, res) {
 	var docs = req.docs;
-    res.render('graphs', {
-      "graphs" : docs
-    });
+  res.render('graphs', {
+    "graphs" : docs
+  });
 });
 
 /* GET second graph page.
@@ -75,61 +77,63 @@ router.get('/graphs', function(req, res) {
 */
 router.get('/foodGraph', function(req, res) {
 	var docs = req.docs;
-    res.render('foodGraph', {
-      "foodGraph" : docs
-    });
+  res.render('foodGraph', {
+    "foodGraph" : docs
+  });
 });
 
 
 /* POST to Register
   Routes user to dashboard after registering an account
   Also inserts account information into MongoDB
-  Note: May need to create the 'accountscollection' db beforehand for dev purposes 
   @developer: Robin
 */
 router.post('/register', function(req, res) {
 
-  var db = req.db;
-
-  // Attributes = attributes from req.body
   var firstName = req.body.firstname;
   var lastName = req.body.lastname;
   var username = req.body.username;
   var password = req.body.password;
 
-  // Collection name is 'accountscollection'
-  var collection = db.get('accountscollection');
+  const MongoClient = require('mongodb').MongoClient;
+  const uri = 'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority';
+  const client = new MongoClient(uri, { useNewUrlParser: true });
 
-  // Check DB for repeated usernames
-  collection.find().then(collection => {
-    collection.forEach(function(account) {
-        // If account's username already exists, redirect to error code
-        if (account.username == username) {
-          res.send("Account already exists");
-        }
-    });
-  })
+  client.connect(err => {
+    var accountsDB = client.db('accountsDB');
+    var accountsCollection = accountsDB.collection('accountscollection');
+    var shouldInsert = true;
 
-  // Submit to the DB
-  collection.insert({
-      "firstname" : firstName,
-      "lastname" : lastName, 
-      "username" : username,
-      "password" : password
-  }, function (err, doc) {
+    // Check DB for repeated usernames
+    accountsCollection.find().toArray(function(err, array) {
       if (err) {
-          // If it failed, return error
-          res.send("There was a problem adding the information to the database.");
+        console.log('Unable to check repeated usernames!');
+      } else {
+        array.forEach(function(item) {
+          if (item.username == username) {
+            console.log('Account already exists!');
+            shouldInsert = false;
+          }
+        });
       }
-      else {
-          // Else, redirect to dashboard
-		  current = username;
-          if (username == "hwang") {
-				res.redirect("accountsAdmin");
-		} else {
-				res.redirect("accounts");
-		}
+    });
+
+    // Querying database to register and check repeated accounts are asynchronous
+    // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
+    // Before the account can be registered
+    setTimeout(function() {
+      if (shouldInsert) {
+        var insertedDoc = {firstName: firstName, lastName: lastName, username: username, password: password};
+        accountsCollection.insertOne(insertedDoc, function(err){
+          if (err) {
+            console.log('Unable to insert document');
+          } else {
+            console.log('Account registered!');
+          }
+        });
       }
+    }, 1000);
+
   });
 
 });
