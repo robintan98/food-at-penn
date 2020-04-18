@@ -94,6 +94,10 @@ router.post('/register', function(req, res) {
   var lastName = req.body.lastname;
   var username = req.body.username;
   var password = req.body.password;
+  var email = req.body.email;
+  var phone = req.body.phone;
+  var school = req.body.school;
+  var year = req.body.year;
 
   const MongoClient = require('mongodb').MongoClient;
   const uri = 'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority';
@@ -112,6 +116,7 @@ router.post('/register', function(req, res) {
         array.forEach(function(item) {
           if (item.username == username) {
             console.log('Account already exists!');
+
             shouldInsert = false;
           }
         });
@@ -122,13 +127,24 @@ router.post('/register', function(req, res) {
     // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
     // Before the account can be registered
     setTimeout(function() {
-      if (shouldInsert) {
-        var insertedDoc = {firstName: firstName, lastName: lastName, username: username, password: password};
+      if (!shouldInsert) {
+        console.log('redirected!');
+        res.redirect('register');
+      } else {
+        var insertedDoc = {firstName: firstName,
+                           lastName: lastName,
+                           username: username,
+                           password: password,
+                           email: email,
+                           phone: phone,
+                           school: school,
+                           year: year};
         accountsCollection.insertOne(insertedDoc, function(err){
           if (err) {
             console.log('Unable to insert document');
           } else {
             console.log('Account registered!');
+            res.redirect('accounts');
           }
         });
       }
