@@ -1,5 +1,6 @@
 package com.foodatpenn;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,14 @@ public class ViewAllActivity extends AppCompatActivity {
         displayName.setText(users.getName(userEmail));
         year.setText("" + users.getClassYear(userEmail));
         rating.setText(Double.toString(users.getRating(userEmail)));
+    }
+
+    public void rateUser(View view) {
+        String userEmail = spinner.getSelectedItem().toString();
+
+        Intent i = new Intent(this, ReviewUserActivity.class);
+        i.putExtra("Email", userEmail);
+        startActivityForResult(i, 2);
     }
 
 

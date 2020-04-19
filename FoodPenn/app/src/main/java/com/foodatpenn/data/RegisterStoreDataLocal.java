@@ -176,7 +176,7 @@ public class RegisterStoreDataLocal implements RegistrationStore {
     }
 
     @Override
-    public void rateUser(int rating) {
+    public void rateUser(String email, int rating) {
 
     }
 

@@ -66,8 +66,8 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 				'name': name,
 				'year': year,
 				'phone': phone,
-				'rating': 5, 
-				'numReviews': 1
+				'rating': "5", 
+				'numReviews': "1"
 			};
 			var db = client.db('nodelogin');
 

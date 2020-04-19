@@ -11,6 +11,6 @@ public interface RegistrationStore {
     public String getPhone(String email);
     public void modifyUser(String email, String name, int year, String phone);
     public Map<String, String> getUsers();
-    public void rateUser(int rating);
+    public void rateUser(String email, int rating);
     public double getRating(String email);
 }

@@ -77,4 +77,8 @@ public class User {
         return rating;
     }
 
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
 }

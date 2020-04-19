@@ -288,8 +288,16 @@ public class RegistrationStoreMongo implements RegistrationStore {
     }
 
     @Override
-    public void rateUser(int rating) {
-
+    public void rateUser(final String email, int rating) {
+        compositeDisposable.add(iMyService.addRating(email, rating)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+                        data.get(email).setRating(Double.valueOf(response));
+                    }
+                }));
     }
 
     @Override
