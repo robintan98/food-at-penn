@@ -237,6 +237,9 @@ public class RegistrationStoreMongo implements RegistrationStore {
 
     @Override
     public String getName(String email) {
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getName();
+        }
         return data.get(email).getName();
     }
 
@@ -244,11 +247,17 @@ public class RegistrationStoreMongo implements RegistrationStore {
 
     @Override
     public int getClassYear(String email) {
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getClassYear();
+        }
         return data.get(email).getClassYear();
     }
 
     @Override
     public String getPhone(String email) {
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getPhoneNumber();
+        }
         return data.get(email).getPhoneNumber();
     }
 
@@ -302,6 +311,9 @@ public class RegistrationStoreMongo implements RegistrationStore {
 
     @Override
     public double getRating(String email) {
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getRating();
+        }
         return data.get(email).getRating();
     }
 

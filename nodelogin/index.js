@@ -202,11 +202,16 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 					db.collection('user')
 						.findOne({'email':email}, function(err, user) {
 
-							user['name'] = name;
-							user['year'] = year;
-							user['phone'] = phone;
-							response.json('User Modified');
-							console.log('User found');
+
+							var newValues = {$set: {'name': name, 'year': year, 'phone': phone}};
+							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => { 
+								if(err) { 
+									res.json( 'error' );
+									console.log('error');
+								} else { 
+									response.json('Modified User');
+									console.log('Modified user');
+								}});
 
 						})
 				}
@@ -251,10 +256,17 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 							numSoFar = numSoFar + 1;
 							var newRating = ratingPrev / numSoFar;
 
-							user.rating = String(newRating);
-							user.numReviews = String(numSoFar);
-							response.json(newRating);
-							console.log(newRating);
+							var newValues = {$set: {rating: newRating, numReviews: numSoFar}};
+
+							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => { 
+								if(err) { 
+									res.json( 'error' );
+									console.log('error');
+								} else { 
+									response.json(newRating);
+									console.log(newRating);
+								}});
+
 
 						})
 				}
