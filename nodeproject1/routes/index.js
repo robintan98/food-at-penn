@@ -109,6 +109,9 @@ router.post('/register', function(req, res) {
   var phone = req.body.phone;
   var school = req.body.school;
   var year = req.body.year;
+  var adminKey = req.body.adminKey;
+
+  var isAdmin = false;
 
   const MongoClient = require('mongodb').MongoClient;
   const uri = 'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority';
@@ -141,6 +144,9 @@ router.post('/register', function(req, res) {
         console.log('redirected!');
         res.redirect('register');
       } else {
+        if (adminKey == "350S20-39") {
+          isAdmin = true;
+        }
         var insertedDoc = {firstName: firstName,
                            lastName: lastName,
                            username: username,
@@ -148,8 +154,8 @@ router.post('/register', function(req, res) {
                            email: email,
                            phone: phone,
                            school: school,
-                           year: year};
-        console.log(insertedDoc);
+                           year: year,
+                           isAdmin: isAdmin};
         accountsCollection.insertOne(insertedDoc, function(err) {
           if (err) {
             console.log('Unable to insert document');
@@ -183,6 +189,7 @@ router.post('/login', function(req, res) {
     var accountsDB = client.db('accountsDB');
     var accountsCollection = accountsDB.collection('accountscollection');
     var shouldLogin = false;
+    var isAdmin = false;
     var userFirstName = "";
 
     // Check DB if username and password align
@@ -195,6 +202,7 @@ router.post('/login', function(req, res) {
             if (item.password == password) {
               shouldLogin = true;
               userFirstName = item.firstName;
+              isAdmin = item.isAdmin;
               console.log('Username and password match!');
             } 
           }
@@ -212,8 +220,13 @@ router.post('/login', function(req, res) {
       } else {
         current = username;
         currentFirstName = userFirstName;
-        console.log('Redirecting to account!');
-        res.redirect('account');
+        if (isAdmin) {
+          console.log('Redirecting to admin!');
+          res.redirect('admin');
+        } else {
+          console.log('Redirecting to account!');
+          res.redirect('account');
+        }
       }
     }, 1000);
 
