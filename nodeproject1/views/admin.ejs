@@ -12,21 +12,23 @@
   </head>
 
   <body>
-    <h1>Acccounts</h1>
+    <h1>Welcome, Admin!</h1>
 
     <!--
       List display of current registered users for admin viewage
+      Added default message if there are no registered users.
       @developer: Robin
 	  
-	  Add button for redirection to data visualizations
-	  @developer: Hannah
+      Add button for redirection to data visualizations
+      @developer: Hannah
     !-->
     <h2>Current Registered Users</h2>
     <ul>
       <%
         var list = '';
-		
+        var noUsers = true;
         for (i = 0; i < accounts.length; i++) {
+          noUsers = false;
           list += '<li>' + 
                    'User Number: ' + i.toString() + '<br>' + 
                    'First Name: ' + accounts[i].firstname + '<br>' + 
@@ -34,8 +36,10 @@
                    'Username: ' + accounts[i].username + '<br>' +
                    'Password: ' + accounts[i].password + '<br>' + 
                    '</li>';
-        } 
-		
+        }
+        if (noUsers) {
+          lists = 'No Registered users!';
+        }
       %>
       <%- list %>
     </ul>

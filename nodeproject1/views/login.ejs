@@ -24,9 +24,13 @@
   <body>
     <h1><%= title %></h1>
     <form id="formLoginAccount" name="login" method="post" action="/login">
-      <input id="inputUsername" type="text" placeholder="Username" name="username" />
-      <input id="inputPassword" type="text" placeholder="Password" name="password" />
-      <button id="submitButton" type="submit">Submit</button>
+      <div>
+        <input id="inputUsername" type="text" placeholder="Username" name="username" />
+        <input id="inputPassword" type="text" placeholder="Password" name="password" />
+      </div>
+      <div style="margin-top: 5%">
+        <button id="submitButton" type="submit">Submit</button>
+      </div>
     </form>
   </body>
 

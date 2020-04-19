@@ -16,20 +16,19 @@ var logger = require('morgan');
   Database is located at localhost:27017/posttest
   @developer: Hannah
 */
-var monk = require('monk');
-var db = monk('localhost:27017/usertest');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 var postDocs = {};
+var accountsDB;
+
 client.connect(err => {
-  var db1 = client.db('postDB').collection('postscollection');
-  db1.find({}).toArray(function(err, docs) {
+  var postsDB = client.db('postDB').collection('postscollection');
+  postsDB.find({}).toArray(function(err, docs) {
     postDocs = docs;
-    console.log(postDocs);
   });
-  
-  console.log('received');
+
+  accountsDB = client.db('accountsDB');
   client.close();
 });
 
@@ -54,9 +53,11 @@ app.use(express.static(path.join(__dirname, 'public')));
   
   Add post db to accessibility
   @developer: Hannah
+
+  Update: only send postDocs to index.js
+  @developer: Robin
 */
 app.use(function(req, res, next){
-  req.db = db;
   req.docs = postDocs;
   next();
 });
