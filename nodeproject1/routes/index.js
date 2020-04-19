@@ -34,10 +34,12 @@ router.get('/login', function(req, res) {
   @developer: Robin and Hannah
 */
 router.get('/account', function(req, res) {
-  var postDocs = req.postDocs;
+  var docs = req.docs;
+  console.log(docs);
   res.render('account', {
+    accounts : {},
     user : current,
-    posts : postDocs,
+    posts : docs,
     userFirstName : currentFirstName
   }); 
 });
@@ -45,29 +47,23 @@ router.get('/account', function(req, res) {
 /* GET accounts page for admin.
   @developer: Hannah
 */
-router.get('/admin', function(req, res) {
-  var accountDocs = req.accountDocs;
-  console.log(accountDocs);
-  res.render('admin', {
-    accounts: accountDocs
-  });
-  
-	// var postsDB = req.postsDB;
-	// var collection = postsDB.get('accountscollection');
-  // collection.find({}, {}, function(err, docs) {
-  //   res.render('accountsAdmin', {
-  //     accounts : docs,
-  //   });
-	// });
+router.get('/accountsAdmin', function(req, res) {
+	var db = req.db;
+	var collection = db.get('accountscollection');
+  collection.find({}, {}, function(e, docs) {
+    res.render('accountsAdmin', {
+      accounts : docs,
+    });
+	});
 });	
 
 /* GET all posts page.
   @developer: Hannah
 */
 router.get('/posts', function(req, res) {
-	var postDocs = req.postDocs;
+	var docs = req.docs;
   res.render('posts', {
-    "posts" : postDocs
+    "posts" : docs
   });
 });
 
@@ -75,9 +71,9 @@ router.get('/posts', function(req, res) {
   @developer: Hannah
 */
 router.get('/graphs', function(req, res) {
-	var postDocs = req.postDocs;
+	var docs = req.docs;
   res.render('graphs', {
-    "graphs" : postDocs
+    "graphs" : docs
   });
 });
 
@@ -85,9 +81,9 @@ router.get('/graphs', function(req, res) {
   @developer: Hannah
 */
 router.get('/foodGraph', function(req, res) {
-	var postDocs = req.postDocs;
+	var docs = req.docs;
   res.render('foodGraph', {
-    "foodGraph" : postDocs
+    "foodGraph" : docs
   });
 });
 
@@ -223,7 +219,7 @@ router.post('/login', function(req, res) {
 /* Router to from admin page.
   @developer: Hannah
 */
-router.post('/admin', function(req, res) {
+router.post('/accountsAdmin', function(req, res) {
   res.redirect('posts');
 });
 
