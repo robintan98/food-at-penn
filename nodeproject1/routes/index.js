@@ -139,6 +139,7 @@ router.post('/register', function(req, res) {
     // Querying database to register and check repeated accounts is asynchronous
     // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
     // Before the account can be registered
+    // Also, adminKey = "350S20-39", then elevate admin privilege for this user
     setTimeout(function() {
       if (!shouldInsert) {
         console.log('redirected!');
@@ -193,6 +194,7 @@ router.post('/login', function(req, res) {
     var userFirstName = "";
 
     // Check DB if username and password align
+    // If so, then update userFirstname and isAdmin
     accountsCollection.find().toArray(function(err, array) {
       if (err) {
         console.log('Unable to check is username and password aligns!');
@@ -213,6 +215,7 @@ router.post('/login', function(req, res) {
     // Querying database to check if username and password matches is asynchronous
     // As a result, a 1000 ms delay is needed to check the database for matching password before the user can login
     // If they don't match, redirects back to login page
+    // Also, if user has admin status, then redirect to admin page instead
     setTimeout(function() {
       if (!shouldLogin) {
         console.log('Username and password don\'t match!');

@@ -53,6 +53,9 @@ app.use(express.static(path.join(__dirname, 'public')));
   
   Add post db to accessibility
   @developer: Hannah
+
+  Update: only send postDocs to index.js
+  @developer: Robin
 */
 app.use(function(req, res, next){
   req.docs = postDocs;
