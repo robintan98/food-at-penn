@@ -38,6 +38,12 @@ public class LandingPageActivity extends AppCompatActivity {
         startActivityForResult(i, 2);
     }
 
+    public void moveToUsers(View view) {
+        Intent i = new Intent(this, ViewAllActivity.class);
+        i.putExtra("Email", userEmail);
+        startActivityForResult(i, 2);
+    }
+
     public void moveToPosts(View view) {
         Intent i = new Intent(this, CreatePostsActivity.class);
         startActivityForResult(i, 2);

@@ -1,5 +1,7 @@
 package com.foodatpenn.data;
 
+import java.util.Map;
+
 public interface RegistrationStore {
     public void addUser(String email, String password, String name, int year, String phone);
     public boolean verifyLogin(String name, String password);
@@ -8,4 +10,7 @@ public interface RegistrationStore {
     public int getClassYear(String email);
     public String getPhone(String email);
     public void modifyUser(String email, String name, int year, String phone);
+    public Map<String, String> getUsers();
+    public void rateUser(int rating);
+    public double getRating(String email);
 }

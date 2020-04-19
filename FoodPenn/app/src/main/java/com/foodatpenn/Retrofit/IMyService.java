@@ -35,4 +35,13 @@ public interface IMyService {
                                     @Field("year") String year,
                                     @Field("phone") String phone);
 
+    @POST("users")
+    @FormUrlEncoded
+    Observable<String> allUsers(@Field("email") String email);
+
+    @POST("addRating")
+    @FormUrlEncoded
+    Observable<String> addRating(@Field("email") String email,
+                                 @Field("rating") int rating);
+
 }

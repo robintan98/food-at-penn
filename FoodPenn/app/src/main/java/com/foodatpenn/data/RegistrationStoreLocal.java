@@ -1,6 +1,7 @@
 package com.foodatpenn.data;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationStoreLocal implements RegistrationStore {
 
@@ -66,5 +67,20 @@ public class RegistrationStoreLocal implements RegistrationStore {
         currentUser.setName(name);
         currentUser.setClassYear(year);
         currentUser.setPhoneNumber(phone);
+    }
+
+    @Override
+    public Map<String, String> getUsers() {
+        return null;
+    }
+
+    @Override
+    public void rateUser(int rating) {
+
+    }
+
+    @Override
+    public double getRating(String email) {
+        return 0;
     }
 }
