@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.Buffer;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterStoreDataLocal implements RegistrationStore {
     private static final String FILE_NAME = "data.txt";
@@ -167,5 +168,20 @@ public class RegisterStoreDataLocal implements RegistrationStore {
             returnVal += data.get(userEmail).toString() + "\n";
         }
         return returnVal;
+    }
+
+    @Override
+    public Map<String, String> getUsers() {
+        return null;
+    }
+
+    @Override
+    public void rateUser(String email, int rating) {
+
+    }
+
+    @Override
+    public double getRating(String email) {
+        return 0;
     }
 }

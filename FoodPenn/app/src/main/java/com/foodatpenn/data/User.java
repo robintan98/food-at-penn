@@ -3,6 +3,7 @@ package com.foodatpenn.data;
 public class User {
     private String email, name, phoneNumber, password;
     private int classYear;
+    private double rating;
 
     public User (String email, String password, String name, int year, String phoneNumber) {
         this.email = email;
@@ -10,6 +11,16 @@ public class User {
         this.name = name;
         this.classYear = year;
         this.phoneNumber = phoneNumber;
+        rating = 5;
+    }
+
+    public User (String email, String password, String name, int year, String phoneNumber, double rating) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.classYear = year;
+        this.phoneNumber = phoneNumber;
+        this.rating = rating;
     }
 
     public String getEmail() {
@@ -60,6 +71,14 @@ public class User {
         } else {
             return new User(data[0], data[1], data[2], Integer.valueOf(data[4]), data[3]);
         }
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
 }

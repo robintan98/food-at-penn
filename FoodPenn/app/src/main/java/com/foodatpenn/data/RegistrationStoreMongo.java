@@ -29,6 +29,7 @@ import java.io.PrintWriter;
 import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -140,6 +141,7 @@ public class RegistrationStoreMongo implements RegistrationStore {
             status = false;
             currentUser = defaultUser;
             getLoggedInUser(name);
+            setUserMap();
 
             return true;
         }
@@ -156,6 +158,31 @@ public class RegistrationStoreMongo implements RegistrationStore {
                         setCurrentUser(response);
                     }
                 }));
+    }
+
+    private void setUserMap() {
+        compositeDisposable.add(iMyService.allUsers("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+                        JSONArray jsonArr = new JSONArray(response);
+                        for (int i = 0; i < jsonArr.length(); i++) {
+                            String name = jsonArr.getJSONObject(i).getString("name");
+                            String email = jsonArr.getJSONObject(i).getString("email");
+                            String phone = jsonArr.getJSONObject(i).getString("phone");
+                            String year = jsonArr.getJSONObject(i).getString("year");
+                            String rating = jsonArr.getJSONObject(i).getString("rating");
+                            User currUser = new User(email, "", name, Integer.valueOf(year), phone, Double.valueOf(rating));
+                            putUser(email, currUser);
+                        }
+                    }
+                }));
+    }
+
+    private void putUser(String email, User user) {
+        data.put(email, user);
     }
 
     private void setCurrentUser(String o) {
@@ -210,17 +237,28 @@ public class RegistrationStoreMongo implements RegistrationStore {
 
     @Override
     public String getName(String email) {
-        return currentUser.getName();
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getName();
+        }
+        return data.get(email).getName();
     }
+
+
 
     @Override
     public int getClassYear(String email) {
-        return currentUser.getClassYear();
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getClassYear();
+        }
+        return data.get(email).getClassYear();
     }
 
     @Override
     public String getPhone(String email) {
-        return currentUser.getPhoneNumber();
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getPhoneNumber();
+        }
+        return data.get(email).getPhoneNumber();
     }
 
     @Override
@@ -247,6 +285,36 @@ public class RegistrationStoreMongo implements RegistrationStore {
             returnVal += data.get(userEmail).toString() + "\n";
         }
         return returnVal;
+    }
+
+    @Override
+    public Map<String, String> getUsers() {
+        Map<String, String> returnVal = new HashMap<String, String>();
+        for (String s: data.keySet()) {
+            returnVal.put(s, data.get(s).getName());
+        }
+        return returnVal;
+    }
+
+    @Override
+    public void rateUser(final String email, int rating) {
+        compositeDisposable.add(iMyService.addRating(email, rating)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+                        data.get(email).setRating(Double.valueOf(response));
+                    }
+                }));
+    }
+
+    @Override
+    public double getRating(String email) {
+        if (email.equals(currentUser.getEmail())) {
+            return currentUser.getRating();
+        }
+        return data.get(email).getRating();
     }
 
 }

@@ -65,7 +65,9 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 				'salt': salt,
 				'name': name,
 				'year': year,
-				'phone': phone
+				'phone': phone,
+				'rating': "5", 
+				'numReviews': "1"
 			};
 			var db = client.db('nodelogin');
 
@@ -200,17 +202,79 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 					db.collection('user')
 						.findOne({'email':email}, function(err, user) {
 
-							user['name'] = name;
-							user['year'] = year;
-							user['phone'] = phone;
-							response.json('User Modified');
-							console.log('User found');
+
+							var newValues = {$set: {'name': name, 'year': year, 'phone': phone}};
+							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => { 
+								if(err) { 
+									res.json( 'error' );
+									console.log('error');
+								} else { 
+									response.json('Modified User');
+									console.log('Modified user');
+								}});
 
 						})
 				}
 			})
 
 		});
+
+		//Get User Names
+		app.post('/users', (request, response, next) => {
+
+			var db = client.db('nodelogin');
+
+			db.collection('user').find({}).toArray(function(err, result) {
+				console.log(result);
+				response.json(result);
+			})
+
+		});
+
+		//Set new rating datapoint
+		app.post('/addRating', (request, response, next) => {
+			var post_data = request.body;
+			var db = client.db('nodelogin');
+
+			var email = post_data.email;
+			var rating = Number(post_data.rating);
+
+			db.collection('user').find({'email':email}).count(function(err, number) {
+				if (number == 0) {
+
+					response.json({'status': 'email not found'});
+					console.log('status: email not found');
+
+				} else {
+					db.collection('user')
+						.findOne({'email':email}, function(err, user) {
+							var numSoFar = Number(user['numReviews']);
+							var ratingPrev = Number(user['rating']);
+
+							ratingPrev = numSoFar * ratingPrev;
+							ratingPrev = ratingPrev + rating;
+							numSoFar = numSoFar + 1;
+							var newRating = ratingPrev / numSoFar;
+
+							var newValues = {$set: {rating: newRating, numReviews: numSoFar}};
+
+							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => { 
+								if(err) { 
+									res.json( 'error' );
+									console.log('error');
+								} else { 
+									response.json(newRating);
+									console.log(newRating);
+								}});
+
+
+						})
+				}
+			})
+
+		});
+
+
 		//Start web server
 		app.listen(3000, () => {
 			console.log('Connected to MongoDB Server, WebService on port 3000');
