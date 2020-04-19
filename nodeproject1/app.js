@@ -16,24 +16,25 @@ var logger = require('morgan');
   Database is located at localhost:27017/posttest
   @developer: Hannah
 */
-var monk = require('monk');
-var db = monk('localhost:27017/usertest');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 var postDocs = {};
-var accountsDB;
+var accountDocs = {};
 
 client.connect(err => {
-  var postsDB = client.db('postDB').collection('postscollection');
-  postsDB.find({}).toArray(function(err, docs) {
+  var postsDB = client.db('postDB');
+  var postsCollection = postsDB.collection('postscollection');
+  postsCollection.find({}).toArray(function(err, docs) {
     postDocs = docs;
-    console.log(postDocs);
   });
 
-  accountsDB = client.db('accountsDB');
+  var accountsDB = client.db('accountsDB');
+  var accountsCollection = accountsDB.collection('accountscollection');
+  accountsCollection.find({}).toArray(function(err, docs) {
+    accountDocs = docs;
+  });
 
-  console.log('received');
   client.close();
 });
 
@@ -60,9 +61,8 @@ app.use(express.static(path.join(__dirname, 'public')));
   @developer: Hannah
 */
 app.use(function(req, res, next){
-  req.db = db;
-  req.accountsDB = accountsDB;
-  req.docs = postDocs;
+  req.postDocs = postDocs;
+  req.accountDocs = accountDocs;
   next();
 });
 
