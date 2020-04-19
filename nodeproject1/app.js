@@ -28,12 +28,9 @@ client.connect(err => {
   var postsDB = client.db('postDB').collection('postscollection');
   postsDB.find({}).toArray(function(err, docs) {
     postDocs = docs;
-    console.log(postDocs);
   });
 
   accountsDB = client.db('accountsDB');
-
-  console.log('received');
   client.close();
 });
 

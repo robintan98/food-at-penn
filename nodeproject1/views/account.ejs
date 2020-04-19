@@ -24,11 +24,10 @@
     <h2>Your posts</h2>
     <%
       var list = '';
-      if (posts.length == 0) {
-
-      } else {
-        for (i = 0; i < posts.length; i++) {
-          if (posts[i].user == user) {
+      var noPosts = true;
+      for (i = 0; i < posts.length; i++) {
+        if (posts[i].user == user) {
+          noPosts = false;
           list += '<ul><li>' + 
                       'Post ID: ' + i.toString() + '<br>' + 
                       'Weekday: ' + posts[i].weekday + '<br>' + 
@@ -36,8 +35,10 @@
                       'Food type: ' + posts[i].food + '<br>' +
                       'Location: ' + posts[i].location + '<br>' + 
                       '</li></ul>';
-          }     
-        } 
+        }     
+      } 
+      if (noPosts) {
+        list = '<h3>No posts made yet!</h3>';
       }
     %>
     

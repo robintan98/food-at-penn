@@ -35,9 +35,7 @@ router.get('/login', function(req, res) {
 */
 router.get('/account', function(req, res) {
   var docs = req.docs;
-  console.log(docs);
   res.render('account', {
-    accounts : {},
     user : current,
     posts : docs,
     userFirstName : currentFirstName
@@ -47,11 +45,11 @@ router.get('/account', function(req, res) {
 /* GET accounts page for admin.
   @developer: Hannah
 */
-router.get('/accountsAdmin', function(req, res) {
+router.get('/admin', function(req, res) {
 	var db = req.db;
 	var collection = db.get('accountscollection');
   collection.find({}, {}, function(e, docs) {
-    res.render('accountsAdmin', {
+    res.render('admin', {
       accounts : docs,
     });
 	});
@@ -219,7 +217,7 @@ router.post('/login', function(req, res) {
 /* Router to from admin page.
   @developer: Hannah
 */
-router.post('/accountsAdmin', function(req, res) {
+router.post('/admin', function(req, res) {
   res.redirect('posts');
 });
 
