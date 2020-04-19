@@ -7,7 +7,7 @@ var currentFirstName = "";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Food at Penn' });
 });
 
 /* GET register page.
@@ -46,13 +46,22 @@ router.get('/account', function(req, res) {
   @developer: Hannah
 */
 router.get('/admin', function(req, res) {
-	var db = req.db;
-	var collection = db.get('accountscollection');
-  collection.find({}, {}, function(e, docs) {
-    res.render('admin', {
-      accounts : docs,
+	const MongoClient = require('mongodb').MongoClient;
+  const uri = 'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority';
+  const client = new MongoClient(uri, { useNewUrlParser: true });
+
+  client.connect(err => {
+    var accountsDB = client.db('accountsDB');
+    var accountsCollection = accountsDB.collection('accountscollection');
+
+    accountsCollection.find({}).toArray(function(err, docs) {
+      res.render('admin', {
+        accounts : docs,
+      });
     });
-	});
+
+    client.close();
+  });
 });	
 
 /* GET all posts page.
@@ -84,7 +93,6 @@ router.get('/foodGraph', function(req, res) {
     "foodGraph" : docs
   });
 });
-
 
 /* POST to Register
   Routes user to dashboard after registering an account
@@ -125,7 +133,9 @@ router.post('/register', function(req, res) {
           }
         });
       }
-    });
+      
+    client.close();
+  });
 
     // Querying database to register and check repeated accounts is asynchronous
     // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
@@ -210,6 +220,7 @@ router.post('/login', function(req, res) {
       }
     }, 1000);
 
+    client.close();
   });
 
 });

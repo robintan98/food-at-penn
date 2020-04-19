@@ -16,28 +16,28 @@
 
     <!--
 	  
-	  Display all posts. Add button for redirection to data visualizations
-	  @developer: Hannah
+    Display all posts. Add button for redirection to data visualizations
+    Made default message if there are no posts
+    @developer: Hannah and Robin
     !-->
-    <h2>All posts</h2>
     <ul>
       <%
         var list = '';
-		
-		for (i = 0; i < posts.length; i++) {
-		  
-			list += '<li>' + 
+        var noPosts = true;
+		    for (i = 0; i < posts.length; i++) {
+          noPosts = false;
+			    list += '<li>' + 
                    'Post ID: ' + i.toString() + '<br>' + 
-				   'User: ' + posts[i].user + '<br>' + 
+				           'User: ' + posts[i].user + '<br>' + 
                    'Weekday: ' + posts[i].weekday + '<br>' + 
                    'Time: ' + posts[i].time + '<br>' + 
                    'Food type: ' + posts[i].food + '<br>' +
                    'Location: ' + posts[i].location + '<br>' + 
                    '</li>';
-		   
-		  
-          
-        } 
+        }
+        if (noPosts) {
+          list = '<h3>No posts made yet!</h3>';
+        }
 		
       %>
       <%- list %>

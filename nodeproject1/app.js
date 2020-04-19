@@ -16,8 +16,6 @@ var logger = require('morgan');
   Database is located at localhost:27017/posttest
   @developer: Hannah
 */
-var monk = require('monk');
-var db = monk('localhost:27017/usertest');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true });
@@ -57,8 +55,6 @@ app.use(express.static(path.join(__dirname, 'public')));
   @developer: Hannah
 */
 app.use(function(req, res, next){
-  req.db = db;
-  req.accountsDB = accountsDB;
   req.docs = postDocs;
   next();
 });
