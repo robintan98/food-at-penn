@@ -59,8 +59,6 @@ router.get('/admin', function(req, res) {
         accounts : docs,
       });
     });
-
-    client.close();
   });
 });	
 
@@ -133,9 +131,7 @@ router.post('/register', function(req, res) {
           }
         });
       }
-      
-    client.close();
-  });
+    });
 
     // Querying database to register and check repeated accounts is asynchronous
     // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
@@ -153,7 +149,8 @@ router.post('/register', function(req, res) {
                            phone: phone,
                            school: school,
                            year: year};
-          accountsCollection.insertOne(insertedDoc, function(err){
+        console.log(insertedDoc);
+        accountsCollection.insertOne(insertedDoc, function(err) {
           if (err) {
             console.log('Unable to insert document');
           } else {
@@ -220,7 +217,6 @@ router.post('/login', function(req, res) {
       }
     }, 1000);
 
-    client.close();
   });
 
 });

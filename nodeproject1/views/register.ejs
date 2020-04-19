@@ -20,16 +20,24 @@
     <h1><%= title %></h1>
 
     <form id="formRegisterAccount" name="register" method="post" action="/register">
-      <input id="inputFirstName" type="text" placeholder="First Name" name="firstname" />
-      <input id="inputLastName" type="text" placeholder="Last Name" name="lastname" />
-      <input id="inputUsername" type="text" placeholder="Username" name="username" />
-      <input id="inputPassword" type="text" placeholder="Password" name="password" />
+      <div>
+        <input id="inputFirstName" type="text" placeholder="First Name" name="firstname" />
+        <input id="inputLastName" type="text" placeholder="Last Name" name="lastname" />
+        <input id="inputUsername" type="text" placeholder="Username" name="username" />
+        <input id="inputPassword" type="text" placeholder="Password" name="password" />
+      </div>
+      <div>
+
+      <div style="margin-top: 1%">
       <input id="inputEmail" type="text" placeholder="Email" name="email" />
       <input id="inputPhone" type="text" placeholder="Phone Number" name="phone" />
       <input id="inputSchool" type="text" placeholder="School" name="school" />
       <input id="inputYear" type="text" placeholder="Year" name="year" />
-      <button id="submitButton">Submit</button>
-      <div id="notifContainer"></div>
+      </div>
+
+      <div style="margin-top: 5%">
+        <button id="submitButton">Submit</button>
+      </div>
     </form>
 
   </body>
