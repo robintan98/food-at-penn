@@ -36,11 +36,11 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-var MongoClient = mongodb.MongoClient;
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://dbUser:Food@Penn@cluster0-j6b9f.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
 
-var url = 'mongodb://localhost:27017'
-
-MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
+client.connect( function(err){
 	if(err) {
 		console.log('Unable to connect to mongoDB server', err);
 
