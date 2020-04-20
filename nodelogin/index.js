@@ -276,8 +276,8 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 
 
 		//Start web server
-		app.listen(3000, () => {
-			console.log('Connected to MongoDB Server, WebService on port 3000');
+		app.listen(3001, () => {
+			console.log('Connected to MongoDB Server, WebService on port 3001');
 		})
 	}
 });
