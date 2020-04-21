@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
-import com.foodatpenn.data.RegisterStoreDataLocal;
 import com.foodatpenn.data.RegistrationStoreMongo;
 
 public class ModifyActivity extends AppCompatActivity {

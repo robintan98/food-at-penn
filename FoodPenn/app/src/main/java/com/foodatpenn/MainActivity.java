@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Button;
 import android.view.View;
@@ -15,15 +13,10 @@ import com.example.foodpenn.R;
 import com.foodatpenn.Retrofit.IMyService;
 import com.foodatpenn.Retrofit.RetrofitClient;
 import com.foodatpenn.data.RegistrationStore;
-import com.foodatpenn.data.RegisterStoreDataLocal;
 import com.foodatpenn.data.RegistrationStoreMongo;
 
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IMyService iMyService;
+
+    public MainActivity(){
+
+    }
 
     @Override
     protected void onStop() {
@@ -86,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, RegistrationActivity.class);
         startActivityForResult(i, 2);
     }
+
+    /*public String getEmail(){
+
+        return userEmail.toString();
+    }*/
 
 
 }

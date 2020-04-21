@@ -32,19 +32,32 @@ function checkHashPassword(userPassword, salt) {
 	return passwordData;
 }
 
+class Post {
+	constructor(date, food, description, location, id, email, comments) {
+		this.id = id;
+		this.date = date;
+		this.food = food;
+		this.description = description;
+		this.location = location;
+		this.email = email;
+		this.comments = comments;
+	}
+}
+
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-var MongoClient = mongodb.MongoClient;
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://dbUser:Food@Penn@cluster0-j6b9f.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
 
-var url = 'mongodb://localhost:27017'
-
-MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
+client.connect( function(err){
 	if(err) {
 		console.log('Unable to connect to mongoDB server', err);
 
 	} else {
+
 		//Register
 		app.post('/register', (request, response, next) => {
 			var post_data = request.body;
@@ -66,7 +79,7 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 				'name': name,
 				'year': year,
 				'phone': phone,
-				'rating': "5", 
+				'rating': "5",
 				'numReviews': "1"
 			};
 			var db = client.db('nodelogin');
@@ -204,11 +217,11 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 
 
 							var newValues = {$set: {'name': name, 'year': year, 'phone': phone}};
-							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => { 
-								if(err) { 
+							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => {
+								if(err) {
 									res.json( 'error' );
 									console.log('error');
-								} else { 
+								} else {
 									response.json('Modified User');
 									console.log('Modified user');
 								}});
@@ -230,6 +243,42 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 			})
 
 		});
+
+		app.post('/createPost', (request, response, next) => {
+			var post_data = request.body;
+			var db = client.db('nodelogin');
+
+			var id = post_data.id;
+			var date = post_data.date;
+			var food = post_data.food;
+			var description = post_data.description;
+			var location = post_data.location;
+			var email = post_data.email;
+			var comments = post_data.comments;
+			
+
+			var newPost = new Post(date, food, description, location, id, email, comments);
+
+			db.collection('posts').find({'id':id}).count(function(err, number) {
+				if (number != 0) {
+
+					response.json('Post already exists');
+					console.log('Post already exists');
+
+				} else {
+					db.collection('posts')
+						.insertOne(newPost, function(error, res) {
+							response.json('Registered post');
+							console.log('Registered post');
+						})
+				}
+			})
+
+		});
+
+
+
+
 
 		//Set new rating datapoint
 		app.post('/addRating', (request, response, next) => {
@@ -258,11 +307,11 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 
 							var newValues = {$set: {rating: newRating, numReviews: numSoFar}};
 
-							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => { 
-								if(err) { 
+							db.collection('user').updateOne( {'email':email}, newValues, (err, res) => {
+								if(err) {
 									res.json( 'error' );
 									console.log('error');
-								} else { 
+								} else {
 									response.json(newRating);
 									console.log(newRating);
 								}});
@@ -275,9 +324,83 @@ MongoClient.connect(url, {useNewUrlParser: true}, function(err, client){
 		});
 
 
+
+		app.post('/modifyPost', (request, response, next) => {
+        	var post_data = request.body;
+
+        	var db = client.db('nodelogin');
+
+            var id = post_data.id;
+            var food = post_data.food;
+            var description = post_data.description;
+            var location = post_data.location;
+	    var email = post_data.email;
+	    var comments = post_data.comments;
+
+
+        	db.collection('posts').find({'id':id}).count(function(err, number) {
+        		if (number == 0) {
+
+        			response.json({'status': 'email not found'});
+        			console.log('status: email not found');
+
+        		} else {
+        			db.collection('posts').findOne({'id':id}, function(err, user) {
+
+
+        			var newValues = {$set: {'food': food, 'description': description, 'location': location, 'email' : email, 'comments' : comments}};
+        			db.collection('posts').updateOne( {'id':id}, newValues, (err, res) => {
+        				if(err) {
+        					res.json( 'error' );
+        					console.log('error');
+        				} else {
+        					response.json('Modified Posts');
+        					console.log('Modified posts');
+        				}});
+
+        		    })
+                 }
+            })
+
+        });
+
+        app.post('/deletePost', (request, response, next) => {
+            var post_data = request.body;
+
+            var db = client.db('nodelogin');
+              var id = post_data.id;
+
+
+
+            db.collection('posts').find({'id':id}).count(function(err, number) {
+                if (number == 0) {
+
+                    response.json({'status': 'email not found'});
+                    console.log('status: email not found');
+
+                } else {
+                    db.collection('posts').deleteOne({'id':id}, function(err, user) {
+
+                        if(err) {
+                            res.json( 'error' );
+                            console.log('error');
+                        } else {
+                            response.json('Deleted Posts');
+                            console.log('Deleted posts');
+                        }});
+
+                    }
+
+            })
+
+        });
+
+
+
+
 		//Start web server
-		app.listen(3000, () => {
-			console.log('Connected to MongoDB Server, WebService on port 3000');
+		app.listen(3001, () => {
+			console.log('Connected to MongoDB Server, WebService on port 3001');
 		})
 	}
 });

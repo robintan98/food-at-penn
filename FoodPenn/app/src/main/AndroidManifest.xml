@@ -28,6 +28,9 @@
         <activity android:name="com.foodatpenn.ReviewUserActivity"/>
         <activity android:name="com.foodatpenn.ViewAllActivity"/>
         <activity android:name="com.foodatpenn.CreatePostsActivity"/>
+        <activity android:name="com.foodatpenn.WriteCommentActivity"/>
+        <activity android:name="com.foodatpenn.MyPostsActivity"/>
+
 
     </application>
 

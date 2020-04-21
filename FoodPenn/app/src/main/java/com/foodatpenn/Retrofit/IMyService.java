@@ -44,4 +44,25 @@ public interface IMyService {
     Observable<String> addRating(@Field("email") String email,
                                  @Field("rating") int rating);
 
+    @POST("createPost")
+    @FormUrlEncoded
+    Observable<String> createPost(
+                                    @Field("date") String date,
+                                    @Field("food") String food,
+                                    @Field("description") String description,
+                                    @Field("id") String id,
+                                    @Field("location") String location);
+
+    @POST("modifyPost")
+    @FormUrlEncoded
+    Observable<String> modifyPost(@Field("id") String id,
+                                  @Field("food") String food,
+                                  @Field("description") String description,
+                                  @Field("location") String location);
+
+    @POST("deletePost")
+    @FormUrlEncoded
+    Observable<String> deletePost(@Field("id") String id);
+
+
 }

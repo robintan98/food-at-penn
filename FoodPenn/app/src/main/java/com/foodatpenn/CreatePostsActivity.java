@@ -30,13 +30,18 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodpenn.R;
+import com.foodatpenn.data.PostStore;
+import com.foodatpenn.data.PostStoreMongo;
 
 public class CreatePostsActivity extends AppCompatActivity {
-
+    PostStore postList;
     EditText food;
     EditText description;
     EditText locationFood;
+   // MainActivity email = new MainActivity();
     private Button submitButton;
+    String userEmail;
+    String comments;
 
     private ArrayList<Post> posts;
     private int counter = 0;
@@ -45,11 +50,16 @@ public class CreatePostsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_posts_activity);
+        postList = PostStoreMongo.getInstance();
+
+        //String emailId = email.getEmail();
 
         food = (EditText) findViewById(R.id.food);
         description = (EditText) findViewById(R.id.description);
         locationFood = (EditText) findViewById(R.id.locationFood);
         submitButton = (Button) findViewById(R.id.submitButton);
+        userEmail = this.getIntent().getStringExtra("Email");
+        comments = "";
 
 
         if (getIntent().getSerializableExtra("RESULT") == null){
@@ -71,10 +81,11 @@ public class CreatePostsActivity extends AppCompatActivity {
     }
 
     private void submitButtonClicked() {
+        //no comments when a post is first submitted
         Date current = Calendar.getInstance().getTime();
-        Post p = new Post(food.getText().toString(), description.getText().toString(),
+        Post p = new Post(food.getText().toString(), description.getText().toString(), locationFood.getText().toString(), current, counter, userEmail, comments);
+        postList.addPost(current.toString(), food.getText().toString(), description.getText().toString(), Integer.toString(counter), locationFood.getText().toString(), userEmail, "");
 
-                locationFood.getText().toString(), current, counter);
         counter++;
         food.getText().clear();
         description.getText().clear();
@@ -84,12 +95,16 @@ public class CreatePostsActivity extends AppCompatActivity {
     }
 
     public void moveToSeeAllPosts(View view) {
-
-
-
         Intent i = new Intent(this, AllPostsActivity.class);
         i.putExtra("RESULT", posts);
 
+        startActivityForResult(i, 2);
+    }
+
+    public void moveToMyPosts(View view) {
+        Intent i = new Intent(this, MyPostsActivity.class);
+        i.putExtra("Email", userEmail);
+        i.putExtra("RESULT", posts);
         startActivityForResult(i, 2);
     }
 

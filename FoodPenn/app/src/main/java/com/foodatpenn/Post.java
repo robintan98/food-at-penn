@@ -9,12 +9,16 @@ public class Post implements Serializable {
     private String location1;
     private Date date1;
     private int id;
-    public Post(String f, String d, String l, Date da, int iden) {
+    private String email;
+    private String comments;
+    public Post(String f, String d, String l, Date da, int iden, String em, String comm) {
         food1 = f;
         description1 = d;
         location1 = l;
         date1 = da;
         id = iden;
+        email = em;
+        comments = comm;
     }
 
     public String getFood() {
@@ -34,4 +38,10 @@ public class Post implements Serializable {
     }
 
     public int getId() {return id; }
+
+    public String getEmail() {return email; }
+
+    public String getComments() {return comments; }
+
+    public void setComments(String newComm) {comments = newComm;}
 }
