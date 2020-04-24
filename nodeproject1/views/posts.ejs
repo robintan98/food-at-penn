@@ -118,14 +118,14 @@
                   thePosts[i].food.trim().toLowerCase().includes(keyword.trim().toLowerCase()) || 
                   thePosts[i].location.trim().toLowerCase().includes(keyword.trim().toLowerCase())) {
               noPosts = false;
-                html += '<li>' + 
-                            'Post ID: ' + i.toString() + '<br>' + 
-                            'User: ' + thePosts[i].user + '<br>' + 
-                            'Weekday: ' + thePosts[i].weekday + '<br>' + 
-                            'Time: ' + thePosts[i].time + '<br>' + 
-                            'Food type: ' + thePosts[i].food + '<br>' +
-                            'Location: ' + thePosts[i].location + '<br>' + 
-                            '</li><br>';
+              html += '<li>' + 
+                          'Post ID: ' + i.toString() + '<br>' + 
+                          'User: ' + thePosts[i].user + '<br>' + 
+                          'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                          'Time: ' + thePosts[i].time + '<br>' + 
+                          'Food type: ' + thePosts[i].food + '<br>' +
+                          'Location: ' + thePosts[i].location + '<br>' + 
+                          '</li><br>';
             }
           }
           else if (selection == 1) {
@@ -155,7 +155,7 @@
             }
           }
           else if (selection == 3) {
-            if (thePosts[i].time.trim().toLowerCase().include(keyword.trim().toLowerCase())) {
+            if (thePosts[i].time.trim().toLowerCase().includes(keyword.trim().toLowerCase())) {
               noPosts = false;
               html += '<li>' + 
                           'Post ID: ' + i.toString() + '<br>' + 

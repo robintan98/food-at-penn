@@ -186,6 +186,10 @@ router.post('/register', function(req, res) {
       }
     });
 
+    if (username.length == 0 || password.length == 0) {
+      shouldInsert = false;
+    }
+
     // Querying database to register and check repeated accounts is asynchronous
     // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
     // Before the account can be registered
