@@ -53,22 +53,21 @@ router.get('/makeAdmin', function(req, res) {
 */
 router.get('/account', function(req, res) {
 	msg = "";
-   if (admin) {
-	   res.redirect('admin');
-   } else {
-  var docs = req.docs;
-  res.render('account', {
-    user : current,
-    posts : docs,
-    userFirstName : currentFirstName,
-    userLastName : currentLastName,
-    userEmail : currentEmail,
-    userPhone : currentPhone,
-    userSchool : currentSchool,
-    userYear : currentYear,
-
-  }); 
-   }
+  if (admin) {
+    res.redirect('admin');
+  } else {
+    var docs = req.docs;
+    res.render('account', {
+      user : current,
+      posts : docs,
+      userFirstName : currentFirstName,
+      userLastName : currentLastName,
+      userEmail : currentEmail,
+      userPhone : currentPhone,
+      userSchool : currentSchool,
+      userYear : currentYear,
+    }); 
+  }
 });
 
 /* GET accounts page for admin.
@@ -356,7 +355,7 @@ router.post('/makeAdmin', function(req, res) {
     var accountsDB = client.db('accountsDB');
     var accountsCollection = accountsDB.collection('accountscollection');
     var accountExists = false;
-	var alreadyAdmin = false;
+	  var alreadyAdmin = false;
 
     // Check DB for user
     accountsCollection.find().toArray(function(err, array) {
