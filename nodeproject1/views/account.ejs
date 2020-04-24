@@ -11,8 +11,65 @@
   </head>
 
   <body>
+    <style>
+      .paper {
+        background-color: #f7f7f7;
+        margin-top: 10px;
+        margin-left: 15%;
+        margin-right: 15%;
+        padding: 30px;
+        border-radius: 5px;
+      }
+      
+      .paper-header {
+        text-align: center;
+        font-size: 200%;
+        font-weight: bold;
+      }
+
+      .paper-section {
+        font-size: 150%;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+    </style>
+
     <h1>Welcome, <%= userFirstName %>!</h1>
 
+    <div class="paper">
+      <div class="paper-header">
+        <%= userFirstName %>'s Profile Snapshot
+      </div>
+      <div class="ui grid four wide column">
+        <div class="paper-section">
+          Name:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userFirstName %> <%= userLastName %>
+          </div>
+
+          Email:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userEmail %>
+          </div>
+
+          Phone Number:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userPhone %>
+          </div>
+
+          Penn School:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userSchool %>
+          </div>
+
+          Graduation Year:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userYear %>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <!--
       List of posts for the logged-in user
