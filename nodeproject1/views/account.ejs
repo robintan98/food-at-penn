@@ -11,44 +11,234 @@
   </head>
 
   <body>
+    <style>
+      .paper {
+        background-color: #f7f7f7;
+        margin-top: 10px;
+        margin-left: 15%;
+        margin-right: 15%;
+        padding: 30px;
+        border-radius: 5px;
+      }
+      
+      .paper-header {
+        text-align: center;
+        font-size: 200%;
+        font-weight: bold;
+      }
+
+      .paper-section {
+        font-size: 150%;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+    </style>
+
     <h1>Welcome, <%= userFirstName %>!</h1>
 
+    <div class="paper">
+      <div class="paper-header" style="margin-bottom: 10px">
+        <%= userFirstName %>'s Profile Snapshot
+      </div>
+      <div class="ui grid four wide column">
+        <div class="paper-section">
+          Name:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userFirstName %> <%= userLastName %>
+          </div>
+        </div>
+
+        <div class="paper-section">
+          Email:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userEmail %>
+          </div>
+        </div>
+
+        <div class="paper-section">
+          Phone Number:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userPhone %>
+          </div>
+        </div>
+
+        <div class="paper-section">
+          Penn School:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userSchool %>
+          </div>
+        </div>
+
+        <div class="paper-section">
+          Graduation Year:
+          <div style="font-weight: normal; display: inline-block">
+            <%= userYear %>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!--
       List of posts for the logged-in user
       Made default message if there are no current posts
       @developer: Robin
 	  
-      Add button for redirection to data visualizations
+      Add link for redirection to data visualizations
       @developer: Hannah
     !-->
-    <h2>Your posts</h2>
-    <%
-      var list = '';
-      var noPosts = true;
-      for (i = 0; i < posts.length; i++) {
-        if (posts[i].user == user) {
-          noPosts = false;
-          list += '<ul><li>' + 
-                      'Post ID: ' + i.toString() + '<br>' + 
-                      'Weekday: ' + posts[i].weekday + '<br>' + 
-                      'Time: ' + posts[i].time + '<br>' + 
-                      'Food type: ' + posts[i].food + '<br>' +
-                      'Location: ' + posts[i].location + '<br>' + 
-                      '</li></ul>';
-        }     
-      } 
-      if (noPosts) {
-        list = '<h3>No posts made yet!</h3>';
-      }
-    %>
+    <div class="paper" id="postsContainer">
+      <h2>Your posts</h2>
+      <%
+        var list = '';
+        var noPosts = true;
+        for (i = 0; i < posts.length; i++) {
+          if (posts[i].user == user) {
+            noPosts = false;
+            list += '<li>' + 
+                        'Post ID: ' + i.toString() + '<br>' + 
+                        'Weekday: ' + posts[i].weekday + '<br>' + 
+                        'Time: ' + posts[i].time + '<br>' + 
+                        'Food type: ' + posts[i].food + '<br>' +
+                        'Location: ' + posts[i].location + '<br>' + 
+                        '</li><br>';
+          }     
+        } 
+        if (noPosts) {
+          list = '<h3>No posts made yet!</h3>';
+        }
+        var thePosts = posts;
+      %>
+      
+      <ol> <%- list %> </ol>
+
+    </div>
+
+    <br><br>
+
+    <!-- Upon clicking "Filter Searches",
+      Displays the posts based on the keywords contained in the selected dropdown value
+      @developer: Robin
+    -->
+    <div style="display: inline-block; text-align: right; margin-left: 52.5%">
+      <div style="margin-bottom : 10px; font-size: 120%; font-weight: bold">
+        Search by Filter
+      </div>
+
+      <select id="selectionDropdown" style="margin-right: 10px">
+        <option value="0">All Posts</option>
+        <option value="1">Weekday</option>
+        <option value="2">Time</option>
+        <option value="3">Food</option>
+        <option value="4">Location</option>
+      </select>
+
+      <input id="keywordField" type="text" placeholder="Keyword" name="keywordField" />
+
+      <button id="filterButton" style="margin-left: 15%; margin-top: 10px">
+        Filter Searches
+      </button>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+      <script>
+        document.getElementById("filterButton").onclick = function () {
+          var selection = parseInt($("#selectionDropdown :selected").val());
+          var keyword = document.getElementById("keywordField").value;
+          var thePosts = <%- JSON.stringify(posts) %>;
+          var theUser = <%- JSON.stringify(user) %>;
+          var postsContainer = document.getElementById("postsContainer");
+          // Clears postsContainer
+          while(postsContainer.firstChild) {
+            postsContainer.removeChild(postsContainer.firstChild);
+          }
+          var html = '';
+          html += '<h2>Your posts</h2><ol>';
+          var noPosts = true;
+
+          // Iterates through posts. Displays if and only if users match AND search keyword matches
+          // Note: ignores leading and trailing whitespace and ignores case
+          for (i = 0; i < thePosts.length; i++) {
+            if (selection == 0) {
+              if ((thePosts[i].user == theUser) && (thePosts[i].weekday.trim().toLowerCase().includes(keyword.trim().toLowerCase()) || 
+                                                    thePosts[i].time.trim().toLowerCase().includes(keyword.trim().toLowerCase()) || 
+                                                    thePosts[i].food.trim().toLowerCase().includes(keyword.trim().toLowerCase()) || 
+                                                    thePosts[i].location.trim().toLowerCase().includes(keyword.trim().toLowerCase()))) {
+                noPosts = false;
+                html += '<li>' + 
+                            'Post ID: ' + i.toString() + '<br>' + 
+                            'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                            'Time: ' + thePosts[i].time + '<br>' + 
+                            'Food type: ' + thePosts[i].food + '<br>' +
+                            'Location: ' + thePosts[i].location + '<br>' + 
+                            '</li><br>';
+              }
+            }
+            else if (selection == 1) {
+              if ((thePosts[i].user == theUser) && (thePosts[i].weekday.trim().toLowerCase().includes(keyword.trim().toLowerCase()))) {
+                noPosts = false;
+                html += '<li>' + 
+                            'Post ID: ' + i.toString() + '<br>' + 
+                            'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                            'Time: ' + thePosts[i].time + '<br>' + 
+                            'Food type: ' + thePosts[i].food + '<br>' +
+                            'Location: ' + thePosts[i].location + '<br>' + 
+                            '</li><br>';
+              }
+            }
+            else if (selection == 2) {
+              if ((thePosts[i].user == theUser) && (thePosts[i].time.trim().toLowerCase().includes(keyword.trim().toLowerCase()))) {
+                noPosts = false;
+                html += '<li>' + 
+                            'Post ID: ' + i.toString() + '<br>' + 
+                            'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                            'Time: ' + thePosts[i].time + '<br>' + 
+                            'Food type: ' + thePosts[i].food + '<br>' +
+                            'Location: ' + thePosts[i].location + '<br>' + 
+                            '</li><br>';
+              }
+            }
+            else if (selection == 3) {
+              if ((thePosts[i].user == theUser) && (thePosts[i].food.trim().toLowerCase().includes(keyword.trim().toLowerCase()))) {
+                noPosts = false;
+                html += '<li>' + 
+                            'Post ID: ' + i.toString() + '<br>' + 
+                            'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                            'Time: ' + thePosts[i].time + '<br>' + 
+                            'Food type: ' + thePosts[i].food + '<br>' +
+                            'Location: ' + thePosts[i].location + '<br>' + 
+                            '</li><br>';
+              }
+            }
+            else if (selection == 4) {
+              if ((thePosts[i].user == theUser) && (thePosts[i].location.trim().toLowerCase().includes(keyword.trim().toLowerCase()))) {
+                noPosts = false;
+                html += '<li>' + 
+                            'Post ID: ' + i.toString() + '<br>' + 
+                            'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                            'Time: ' + thePosts[i].time + '<br>' + 
+                            'Food type: ' + thePosts[i].food + '<br>' +
+                            'Location: ' + thePosts[i].location + '<br>' + 
+                            '</li><br>';
+              }
+            }
+          } 
+          if (noPosts) {
+            html = '<h3>No posts match search!</h3>';
+          } else {
+            html += '</ol>';
+          }
+          postsContainer.innerHTML = html;
+        };
+    </script>
     
-    <%- list %>
+    </div>
 
-    <ul style="color:white; float: left;" class="nav navbar-nav">
-        <li><a href="/graphs"> See Data Visualizations  </a> </li>
-    </ul>
+    <br><br><br>
 
+    <div style="color:white; float: left; margin-left: 15%" class="nav navbar-nav">
+      <a href="/graphs">
+        See Data Visualizations
+      </a>
+    </div>
 
   </body>
 
