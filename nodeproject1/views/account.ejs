@@ -83,42 +83,73 @@
       Made default message if there are no current posts
       @developer: Robin
 	  
-      Add button for redirection to data visualizations
+      Add link for redirection to data visualizations
       @developer: Hannah
     !-->
-    <div class="paper">
-    <h2>Your posts</h2>
-    <%
-      var list = '';
-      var noPosts = true;
-      for (i = 0; i < posts.length; i++) {
-        if (posts[i].user == user) {
-          noPosts = false;
-          list += '<li>' + 
-                      'Post ID: ' + i.toString() + '<br>' + 
-                      'Weekday: ' + posts[i].weekday + '<br>' + 
-                      'Time: ' + posts[i].time + '<br>' + 
-                      'Food type: ' + posts[i].food + '<br>' +
-                      'Location: ' + posts[i].location + '<br>' + 
-                      '</li><br>';
-        }     
-      } 
-      if (noPosts) {
-        list = '<h3>No posts made yet!</h3>';
-      }
-    %>
-    
-    <ol> <%- list %> </ol>
+    <div class="paper" id="postsContainer">
+      <h2>Your posts</h2>
+      <%
+        var list = '';
+        var noPosts = true;
+        for (i = 0; i < posts.length; i++) {
+          if (posts[i].user == user) {
+            noPosts = false;
+            list += '<li>' + 
+                        'Post ID: ' + i.toString() + '<br>' + 
+                        'Weekday: ' + posts[i].weekday + '<br>' + 
+                        'Time: ' + posts[i].time + '<br>' + 
+                        'Food type: ' + posts[i].food + '<br>' +
+                        'Location: ' + posts[i].location + '<br>' + 
+                        '</li><br>';
+          }     
+        } 
+        if (noPosts) {
+          list = '<h3>No posts made yet!</h3>';
+        }
+      %>
+      
+      <ol> <%- list %> </ol>
 
-  </div>
+    </div>
 
-  <br><br>
-  
-  <div style="color:white; float: left;" class="nav navbar-nav">
+    <br><br>
+
+    <!-- Upon clicking "Filter Searches",
+      Displays the posts based on the keywords contained in the selected dropdown value
+      @developer: Robin
+    -->
+    <div style="display: inline-block">
+      <select id="selectionDropdown">
+        <option value="weekday">Weekday</option>
+        <option value="time">Time</option>
+        <option value="food">Food</option>
+        <option value="location">Location</option>
+      </select>
+      <input id="keywordField" type="text" placeholder="Keyword" name="keywordField" style="margin-left: 100%" />
+      <button id="filterButton" style="margin-left: 15%">
+        Filter Searches
+      </button>
+      <script>
+          document.getElementById("filterButton").onclick = function () {
+              var selection = parseInt($("#selectionDropdown :selected").val());
+              var postsContainer = document.getElementById("postsContainer");
+              // Clears postsContainer
+              while(postsContainer.firstChild){
+                postsContainer.removeChild(postsContainer.firstChild);
+              }
+              var html = ''
+              }
+          };
+      </script>
+    </div>
+
+    <br>
+
+    <div style="color:white; float: left; margin-left: 15%" class="nav navbar-nav">
       <a href="/graphs">
         See Data Visualizations
       </a>
-  </div>
+    </div>
 
   </body>
 
