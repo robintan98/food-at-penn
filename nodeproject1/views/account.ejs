@@ -106,6 +106,7 @@
         if (noPosts) {
           list = '<h3>No posts made yet!</h3>';
         }
+        var thePosts = posts;
       %>
       
       <ol> <%- list %> </ol>
@@ -113,6 +114,7 @@
     </div>
 
     <br><br>
+    <div id="mydiv" data-test=<%= userFirstName %>></div>
 
     <!-- Upon clicking "Filter Searches",
       Displays the posts based on the keywords contained in the selected dropdown value
@@ -137,7 +139,105 @@
         Filter Searches
       </button>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+      <!-- <script>
+        var thePosts = <%- JSON.stringify(posts) %>;
+        // thePosts = JSON.parse(thePosts)
+        var postsContainer = document.getElementById("postsContainer");
+        var html = '';
+        for (i = 0; i < thePosts.length; i++) {
+          html += 'hi';
+        } 
+        postsContainer.innerHTML = html;
+      </script> -->
       <script>
+        document.getElementById("filterButton").onclick = function () {
+          var selection = parseInt($("#selectionDropdown :selected").val());
+          var keyword = document.getElementById("keywordField").value;
+          var thePosts = <%- JSON.stringify(posts) %>;
+          var theUser = <%- JSON.stringify(user) %>;
+          if (selection != 0) {
+            var postsContainer = document.getElementById("postsContainer");
+            // Clears postsContainer
+            while(postsContainer.firstChild) {
+              postsContainer.removeChild(postsContainer.firstChild);
+            }
+            var html = '';
+            html += '<h2>Your posts</h2><ol>';
+            var noPosts = true;
+            // postsContainer.innerHTML = keyword;
+            // for (i = 0; i < thePosts.length; i++) {
+            //   if (thePosts[i].user.toString() == <%- JSON.stringify(user) %> ) {
+            //     postsContainer.innerHTML = "reached";
+            //   }
+            // for (i = 0; i < thePosts.length; i++) {
+            //   html += selection;
+            //   if (thePosts[i].user == user) {
+            //     html += "hey";
+            //   }
+            // }
+
+            for (i = 0; i < thePosts.length; i++) {
+              if (selection == 1) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].weekday.toLowerCase() == keyword.toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+              else if (selection == 2) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].time.toLowerCase() == keyword.toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+              else if (selection == 3) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].food.trim().toLowerCase() === keyword.trim().toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+              else if (selection == 4) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].location.toLowerCase() == keyword.toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+            } 
+            if (noPosts) {
+              html = '<h3>No posts match search!</h3>';
+            } else {
+              html += '</ol>';
+            }
+            postsContainer.innerHTML = html;
+          }
+        };
+    </script>
+      <!-- <script>
+          var thePosts = <%= posts %>
           document.getElementById("filterButton").onclick = function () {
             var selection = parseInt($("#selectionDropdown :selected").val());
             var keyword = $("#keywordField").val();
@@ -149,58 +249,60 @@
               }
               var html = '';
               html += '<h2>Your posts</h2><ol>';
-              
-              var noPosts = true;
-              for (i = 0; i < posts.length; i++) {
-                if (selection == 1) {
-                  if ((posts[i].user == user) && (posts[i].weekday.toLowerCase() == keyword.toLowerCase())) {
-                    noPosts = false;
-                    html += '<li>' + 
-                                'Post ID: ' + i.toString() + '<br>' + 
-                                'Weekday: ' + posts[i].weekday + '<br>' + 
-                                'Time: ' + posts[i].time + '<br>' + 
-                                'Food type: ' + posts[i].food + '<br>' +
-                                'Location: ' + posts[i].location + '<br>' + 
-                                '</li><br>';
-                  }
-                }
-                else if (selection == 2) {
-                  if ((posts[i].user == user) && (posts[i].time.toLowerCase() == keyword.toLowerCase())) {
-                    noPosts = false;
-                    html += '<li>' + 
-                                'Post ID: ' + i.toString() + '<br>' + 
-                                'Weekday: ' + posts[i].weekday + '<br>' + 
-                                'Time: ' + posts[i].time + '<br>' + 
-                                'Food type: ' + posts[i].food + '<br>' +
-                                'Location: ' + posts[i].location + '<br>' + 
-                                '</li><br>';
-                  }
-                }
-                else if (selection == 3) {
-                  if ((posts[i].user == user) && (posts[i].food.toLowerCase() == keyword.toLowerCase())) {
-                    noPosts = false;
-                    html += '<li>' + 
-                                'Post ID: ' + i.toString() + '<br>' + 
-                                'Weekday: ' + posts[i].weekday + '<br>' + 
-                                'Time: ' + posts[i].time + '<br>' + 
-                                'Food type: ' + posts[i].food + '<br>' +
-                                'Location: ' + posts[i].location + '<br>' + 
-                                '</li><br>';
-                  }
-                }
-                else if (selection == 4) {
-                  if ((posts[i].user == user) && (posts[i].location.toLowerCase() == keyword.toLowerCase())) {
-                    noPosts = false;
-                    html += '<li>' + 
-                                'Post ID: ' + i.toString() + '<br>' + 
-                                'Weekday: ' + posts[i].weekday + '<br>' + 
-                                'Time: ' + posts[i].time + '<br>' + 
-                                'Food type: ' + posts[i].food + '<br>' +
-                                'Location: ' + posts[i].location + '<br>' + 
-                                '</li><br>';
-                  }
-                }
+              var noPosts = false;
+              for (i = 0; i < thePosts.length; i++) {
+                html += 'hi'
               } 
+              // for (i = 0; i < thePosts.length; i++) {
+              //   if (selection == 1) {
+              //     if ((thePosts[i].user == user) && (thePosts[i].weekday.toLowerCase() == keyword.toLowerCase())) {
+              //       noPosts = false;
+              //       html += '<li>' + 
+              //                   'Post ID: ' + i.toString() + '<br>' + 
+              //                   'Weekday: ' + thePosts[i].weekday + '<br>' + 
+              //                   'Time: ' + thePosts[i].time + '<br>' + 
+              //                   'Food type: ' + thePosts[i].food + '<br>' +
+              //                   'Location: ' + thePosts[i].location + '<br>' + 
+              //                   '</li><br>';
+              //     }
+              //   }
+              //   else if (selection == 2) {
+              //     if ((thePosts[i].user == user) && (thePosts[i].time.toLowerCase() == keyword.toLowerCase())) {
+              //       noPosts = false;
+              //       html += '<li>' + 
+              //                   'Post ID: ' + i.toString() + '<br>' + 
+              //                   'Weekday: ' + thePosts[i].weekday + '<br>' + 
+              //                   'Time: ' + thePosts[i].time + '<br>' + 
+              //                   'Food type: ' + thePosts[i].food + '<br>' +
+              //                   'Location: ' + thePosts[i].location + '<br>' + 
+              //                   '</li><br>';
+              //     }
+              //   }
+              //   else if (selection == 3) {
+              //     if ((thePosts[i].user == user) && (thePosts[i].food.toLowerCase() == keyword.toLowerCase())) {
+              //       noPosts = false;
+              //       html += '<li>' + 
+              //                   'Post ID: ' + i.toString() + '<br>' + 
+              //                   'Weekday: ' + thePosts[i].weekday + '<br>' + 
+              //                   'Time: ' + thePosts[i].time + '<br>' + 
+              //                   'Food type: ' + thePosts[i].food + '<br>' +
+              //                   'Location: ' + thePosts[i].location + '<br>' + 
+              //                   '</li><br>';
+              //     }
+              //   }
+              //   else if (selection == 4) {
+              //     if ((thePosts[i].user == user) && (thePosts[i].location.toLowerCase() == keyword.toLowerCase())) {
+              //       noPosts = false;
+              //       html += '<li>' + 
+              //                   'Post ID: ' + i.toString() + '<br>' + 
+              //                   'Weekday: ' + thePosts[i].weekday + '<br>' + 
+              //                   'Time: ' + thePosts[i].time + '<br>' + 
+              //                   'Food type: ' + thePosts[i].food + '<br>' +
+              //                   'Location: ' + thePosts[i].location + '<br>' + 
+              //                   '</li><br>';
+              //     }
+              //   }
+              // } 
               if (noPosts) {
                 html = '<h3>No posts match search!</h3>';
               } else {
@@ -209,7 +311,7 @@
               postsContainer.innerHTML = html;
             }
           };
-      </script>
+      </script> -->
 
     </div>
 
