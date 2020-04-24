@@ -1,0 +1,34 @@
+
+
+<!DOCTYPE html>
+<html>
+
+
+
+
+  <body>
+  
+  <ul>
+      <%
+        var mess = message;
+		
+      %>
+      
+
+    <form id="makeAdmin" name="makeAdmin" method="post" action="/makeAdmin">
+      <div>
+        <input id="userToMake" type="text" placeholder="Type in a User" name="userToMake" />
+      </div>
+      <div>
+      
+      <div style="margin-top: 5%">
+        <button id="sub">Submit</button>
+      </div>
+
+    </form>
+	
+	<%- mess %>
+
+  </body>
+
+</html>

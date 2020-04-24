@@ -4,9 +4,12 @@ var router = express.Router();
 // Current user and first name to display on the accounts page
 var current = "";
 var currentFirstName = "";
+var admin = false;
+var msg = "";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+   msg = "";
   res.render('index', { title: 'Food at Penn' });
 });
 
@@ -15,6 +18,7 @@ router.get('/', function(req, res, next) {
   @developer: Robin
 */
 router.get('/register', function(req, res) {
+	msg = "";
   res.render('register', { title: 'Register'});
 });
 
@@ -23,7 +27,16 @@ router.get('/register', function(req, res) {
   @developer: Robin
 */
 router.get('/login', function(req, res) {
+	msg = "";
   res.render('login', { title: 'Login'});
+});
+
+router.get('/makeAdmin', function(req, res) {
+	if (!admin) {
+		res.render('adminError');
+	} else {
+		  res.render('makeAdmin', { message: msg});
+	}
 });
 
 /* GET accounts page.
@@ -34,18 +47,28 @@ router.get('/login', function(req, res) {
   @developer: Robin and Hannah
 */
 router.get('/account', function(req, res) {
+	msg = "";
+   if (admin) {
+	   res.redirect('admin');
+   } else {
   var docs = req.docs;
   res.render('account', {
     user : current,
     posts : docs,
     userFirstName : currentFirstName
   }); 
+   }
 });
 
 /* GET accounts page for admin.
   @developer: Hannah
 */
 router.get('/admin', function(req, res) {
+	msg = "";
+	if (!admin) {
+		res.render('adminError');
+    } else {
+	
 	const MongoClient = require('mongodb').MongoClient;
   const uri = 'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority';
   const client = new MongoClient(uri, { useNewUrlParser: true });
@@ -60,22 +83,30 @@ router.get('/admin', function(req, res) {
       });
     });
   });
+	}
+  
 });	
 
 /* GET all posts page.
   @developer: Hannah
 */
 router.get('/posts', function(req, res) {
+	msg = "";
+	if (!admin) {
+		res.render('adminError');		
+	} else {
 	var docs = req.docs;
   res.render('posts', {
     "posts" : docs
   });
+	}
 });
 
 /* GET first graph page.
   @developer: Hannah
 */
 router.get('/graphs', function(req, res) {
+	msg = "";
 	var docs = req.docs;
   res.render('graphs', {
     "graphs" : docs
@@ -86,10 +117,19 @@ router.get('/graphs', function(req, res) {
   @developer: Hannah
 */
 router.get('/foodGraph', function(req, res) {
-	var docs = req.docs;
+	msg = "";
+	if (admin) {
+			var docs = req.docs;
+  res.render('foodGraphAdmin', {
+    "foodGraph" : docs
+  });	
+    } else {
+			var docs = req.docs;
   res.render('foodGraph', {
     "foodGraph" : docs
   });
+	}
+
 });
 
 /* POST to Register
@@ -225,9 +265,11 @@ router.post('/login', function(req, res) {
         currentFirstName = userFirstName;
         if (isAdmin) {
           console.log('Redirecting to admin!');
+		  admin = true;
           res.redirect('admin');
         } else {
           console.log('Redirecting to account!');
+		  admin = false;
           res.redirect('account');
         }
       }
@@ -266,5 +308,72 @@ router.post('/graphs', function(req, res) {
   res.redirect('foodGraph');
   
 });
+
+/* Router to page for setting admin.
+  @developer: Hannah
+*/
+router.post('/foodGraphAdmin', function(req, res) {
+  res.redirect('makeAdmin');
+  
+});
+
+router.post('/makeAdmin', function(req, res) {
+
+  var userToMake = req.body.userToMake;
+  console.log(userToMake);
+
+  const MongoClient = require('mongodb').MongoClient;
+  const uri = 'mongodb+srv://hkwang:135790220@postdb-znag1.mongodb.net/test?retryWrites=true&w=majority';
+  const client = new MongoClient(uri, { useNewUrlParser: true });
+
+  client.connect(err => {
+    var accountsDB = client.db('accountsDB');
+    var accountsCollection = accountsDB.collection('accountscollection');
+    var accountExists = false;
+	var alreadyAdmin = false;
+
+    // Check DB for user
+    accountsCollection.find().toArray(function(err, array) {
+      if (err) {
+        console.log('Unable to check repeated usernames!');
+      } else {
+        array.forEach(function(item) {
+          if (item.username == userToMake) {
+			 
+            console.log(item.username);
+			console.log(item.isAdmin);
+            accountExists = true;
+			if (item.isAdmin == true) {
+			  alreadyAdmin = true;
+			}
+          }
+		  
+        });
+      }
+    });
+
+    // Querying database to register and check repeated accounts is asynchronous
+    // As a result, a 1000 ms delay is needed to check the database for repeated accounts,
+    // Before the account can be registered
+    // Also, adminKey = "350S20-39", then elevate admin privilege for this user
+    setTimeout(function() {
+      if (!accountExists) {
+        msg = "request failed. account does not exist."
+        res.redirect('makeAdmin');
+      } else if (accountExists && alreadyAdmin) {
+		  msg = "request failed. this user is already an admin."
+        res.redirect('makeAdmin');
+	  }
+	  else {
+        accountsCollection.updateOne({username:userToMake}, {$set: {isAdmin:true}});
+		msg = "user successfully made admin";
+		res.redirect('makeAdmin');
+      }
+    }, 1000);
+
+  });
+
+});
+
 
 module.exports = router;
