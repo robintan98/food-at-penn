@@ -122,29 +122,47 @@
       <div style="margin-bottom : 10px; font-size: 120%; font-weight: bold">
         Search by Filter
       </div>
+
       <select id="selectionDropdown" style="margin-right: 10px">
-        <option value="none">Option</option>
-        <option value="weekday">Weekday</option>
-        <option value="time">Time</option>
-        <option value="food">Food</option>
-        <option value="location">Location</option>
+        <option value="0">Option</option>
+        <option value="1">Weekday</option>
+        <option value="2">Time</option>
+        <option value="3">Food</option>
+        <option value="4">Location</option>
       </select>
+
       <input id="keywordField" type="text" placeholder="Keyword" name="keywordField" />
+
       <button id="filterButton" style="margin-left: 15%; margin-top: 10px">
         Filter Searches
       </button>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <script>
           document.getElementById("filterButton").onclick = function () {
             var selection = parseInt($("#selectionDropdown :selected").val());
-            var postsContainer = document.getElementById("postsContainer");
-            // Clears postsContainer
-            while(postsContainer.firstChild){
-              postsContainer.removeChild(postsContainer.firstChild);
-            }
-            var html = ''
+            var keyword = $("#keywordField").val();
+            if (selection != 0) {
+              var postsContainer = document.getElementById("postsContainer");
+              // Clears postsContainer
+              while(postsContainer.firstChild) {
+                postsContainer.removeChild(postsContainer.firstChild);
+              }
+              var html = '';
+              html += '<h2>Your posts</h2>';
+              if (selection == 1) {
+                
+              } else if (selection == 2) {
+                
+              } else if (selection == 3) {
+                
+              } else if (selection == 4) {
+                
+              }
+              postsContainer.innerHTML = html;
             }
           };
       </script>
+
     </div>
 
     <br><br><br>
