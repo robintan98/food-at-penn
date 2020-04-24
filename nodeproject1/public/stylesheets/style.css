@@ -15,8 +15,9 @@ h1 {
 
 h2 {
   color: red;
-  font: 25px Helvetica;
+  font: 200% Helvetica;
   text-align: center;
+  font-weight: bold;
 }
 
 form {

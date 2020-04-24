@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
-// Current user and first name to display on the accounts page
+// Current user information to display on the accounts page, admin status, and message
 var current = "";
 var currentFirstName = "";
+var currentLastName = "";
+var currentEmail = "";
+var currentPhone = "";
+var currentSchool = "";
+var currentYear = "";
 var admin = false;
 var msg = "";
 
@@ -55,7 +60,13 @@ router.get('/account', function(req, res) {
   res.render('account', {
     user : current,
     posts : docs,
-    userFirstName : currentFirstName
+    userFirstName : currentFirstName,
+    userLastName : currentLastName,
+    userEmail : currentEmail,
+    userPhone : currentPhone,
+    userSchool : currentSchool,
+    userYear : currentYear,
+
   }); 
    }
 });
@@ -232,6 +243,11 @@ router.post('/login', function(req, res) {
     var shouldLogin = false;
     var isAdmin = false;
     var userFirstName = "";
+    var userLastName = "";
+    var userEmail = "";
+    var userPhone = "";
+    var userSchool = "";
+    var userYear = "";
 
     // Check DB if username and password align
     // If so, then update userFirstname and isAdmin
@@ -244,6 +260,11 @@ router.post('/login', function(req, res) {
             if (item.password == password) {
               shouldLogin = true;
               userFirstName = item.firstName;
+              userLastName = item.lastName;
+              userEmail = item.email;
+              userPhone = item.phone;
+              userSchool = item.school;
+              userYear = item.year;
               isAdmin = item.isAdmin;
               console.log('Username and password match!');
             } 
@@ -263,13 +284,18 @@ router.post('/login', function(req, res) {
       } else {
         current = username;
         currentFirstName = userFirstName;
+        currentLastName = userLastName;
+        currentEmail = userEmail;
+        currentPhone = userPhone;
+        currentSchool = userSchool;
+        currentYear = userYear;
         if (isAdmin) {
           console.log('Redirecting to admin!');
-		  admin = true;
+		      admin = true;
           res.redirect('admin');
         } else {
           console.log('Redirecting to account!');
-		  admin = false;
+		      admin = false;
           res.redirect('account');
         }
       }
@@ -337,17 +363,15 @@ router.post('/makeAdmin', function(req, res) {
       if (err) {
         console.log('Unable to check repeated usernames!');
       } else {
-        array.forEach(function(item) {
-          if (item.username == userToMake) {
-			 
-            console.log(item.username);
-			console.log(item.isAdmin);
-            accountExists = true;
-			if (item.isAdmin == true) {
-			  alreadyAdmin = true;
-			}
-          }
-		  
+          array.forEach(function(item) {
+            if (item.username == userToMake) {
+              console.log(item.username);
+              console.log(item.isAdmin);
+              accountExists = true;
+              if (item.isAdmin == true) {
+                alreadyAdmin = true;
+              }
+            }
         });
       }
     });
@@ -361,16 +385,15 @@ router.post('/makeAdmin', function(req, res) {
         msg = "request failed. account does not exist."
         res.redirect('makeAdmin');
       } else if (accountExists && alreadyAdmin) {
-		  msg = "request failed. this user is already an admin."
+		    msg = "request failed. this user is already an admin."
         res.redirect('makeAdmin');
-	  }
-	  else {
+	    }
+      else {
         accountsCollection.updateOne({username:userToMake}, {$set: {isAdmin:true}});
-		msg = "user successfully made admin";
-		res.redirect('makeAdmin');
+        msg = "user successfully made admin";
+        res.redirect('makeAdmin');
       }
     }, 1000);
-
   });
 
 });

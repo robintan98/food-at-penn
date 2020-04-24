@@ -46,28 +46,35 @@
           <div style="font-weight: normal; display: inline-block">
             <%= userFirstName %> <%= userLastName %>
           </div>
+        </div>
 
+        <div class="paper-section">
           Email:
           <div style="font-weight: normal; display: inline-block">
             <%= userEmail %>
           </div>
+        </div>
 
+        <div class="paper-section">
           Phone Number:
           <div style="font-weight: normal; display: inline-block">
             <%= userPhone %>
           </div>
+        </div>
 
+        <div class="paper-section">
           Penn School:
           <div style="font-weight: normal; display: inline-block">
             <%= userSchool %>
           </div>
+        </div>
 
+        <div class="paper-section">
           Graduation Year:
           <div style="font-weight: normal; display: inline-block">
             <%= userYear %>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -79,6 +86,7 @@
       Add button for redirection to data visualizations
       @developer: Hannah
     !-->
+    <div class="paper">
     <h2>Your posts</h2>
     <%
       var list = '';
@@ -86,13 +94,13 @@
       for (i = 0; i < posts.length; i++) {
         if (posts[i].user == user) {
           noPosts = false;
-          list += '<ul><li>' + 
+          list += '<li>' + 
                       'Post ID: ' + i.toString() + '<br>' + 
                       'Weekday: ' + posts[i].weekday + '<br>' + 
                       'Time: ' + posts[i].time + '<br>' + 
                       'Food type: ' + posts[i].food + '<br>' +
                       'Location: ' + posts[i].location + '<br>' + 
-                      '</li></ul>';
+                      '</li><br>';
         }     
       } 
       if (noPosts) {
@@ -100,12 +108,15 @@
       }
     %>
     
-    <%- list %>
+    <ol> <%- list %> </ol>
 
-    <ul style="color:white; float: left;" class="nav navbar-nav">
-        <li><a href="/graphs"> See Data Visualizations  </a> </li>
-    </ul>
+  </div>
 
+  <br><br>
+  
+  <div style="color:white; float: left;" class="nav navbar-nav">
+      <li><a href="/graphs"> See Data Visualizations  </a> </li>
+  </div>
 
   </body>
 
