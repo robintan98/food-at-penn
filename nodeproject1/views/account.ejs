@@ -148,15 +148,63 @@
                 postsContainer.removeChild(postsContainer.firstChild);
               }
               var html = '';
-              html += '<h2>Your posts</h2>';
-              if (selection == 1) {
-                
-              } else if (selection == 2) {
-                
-              } else if (selection == 3) {
-                
-              } else if (selection == 4) {
-                
+              html += '<h2>Your posts</h2><ol>';
+              
+              var noPosts = true;
+              for (i = 0; i < posts.length; i++) {
+                if (selection == 1) {
+                  if ((posts[i].user == user) && (posts[i].weekday.toLowerCase() == keyword.toLowerCase())) {
+                    noPosts = false;
+                    html += '<li>' + 
+                                'Post ID: ' + i.toString() + '<br>' + 
+                                'Weekday: ' + posts[i].weekday + '<br>' + 
+                                'Time: ' + posts[i].time + '<br>' + 
+                                'Food type: ' + posts[i].food + '<br>' +
+                                'Location: ' + posts[i].location + '<br>' + 
+                                '</li><br>';
+                  }
+                }
+                else if (selection == 2) {
+                  if ((posts[i].user == user) && (posts[i].time.toLowerCase() == keyword.toLowerCase())) {
+                    noPosts = false;
+                    html += '<li>' + 
+                                'Post ID: ' + i.toString() + '<br>' + 
+                                'Weekday: ' + posts[i].weekday + '<br>' + 
+                                'Time: ' + posts[i].time + '<br>' + 
+                                'Food type: ' + posts[i].food + '<br>' +
+                                'Location: ' + posts[i].location + '<br>' + 
+                                '</li><br>';
+                  }
+                }
+                else if (selection == 3) {
+                  if ((posts[i].user == user) && (posts[i].food.toLowerCase() == keyword.toLowerCase())) {
+                    noPosts = false;
+                    html += '<li>' + 
+                                'Post ID: ' + i.toString() + '<br>' + 
+                                'Weekday: ' + posts[i].weekday + '<br>' + 
+                                'Time: ' + posts[i].time + '<br>' + 
+                                'Food type: ' + posts[i].food + '<br>' +
+                                'Location: ' + posts[i].location + '<br>' + 
+                                '</li><br>';
+                  }
+                }
+                else if (selection == 4) {
+                  if ((posts[i].user == user) && (posts[i].location.toLowerCase() == keyword.toLowerCase())) {
+                    noPosts = false;
+                    html += '<li>' + 
+                                'Post ID: ' + i.toString() + '<br>' + 
+                                'Weekday: ' + posts[i].weekday + '<br>' + 
+                                'Time: ' + posts[i].time + '<br>' + 
+                                'Food type: ' + posts[i].food + '<br>' +
+                                'Location: ' + posts[i].location + '<br>' + 
+                                '</li><br>';
+                  }
+                }
+              } 
+              if (noPosts) {
+                html = '<h3>No posts match search!</h3>';
+              } else {
+                html += '</ol>';
               }
               postsContainer.innerHTML = html;
             }
