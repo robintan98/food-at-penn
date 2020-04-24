@@ -43,6 +43,112 @@
       <%- list %>
     </ul>
 
+    <!-- Upon clicking "Filter Searches",
+      Displays the posts based on the keywords contained in the selected dropdown value
+      @developer: Robin
+    -->
+    <div style="display: inline-block; text-align: right; margin-left: 52.5%">
+      <div style="margin-bottom : 10px; font-size: 120%; font-weight: bold">
+        Search by Filter
+      </div>
+
+      <select id="selectionDropdown" style="margin-right: 10px">
+        <option value="0">Option</option>
+        <option value="1">Weekday</option>
+        <option value="2">Time</option>
+        <option value="3">Food</option>
+        <option value="4">Location</option>
+      </select>
+
+      <input id="keywordField" type="text" placeholder="Keyword" name="keywordField" />
+
+      <button id="filterButton" style="margin-left: 15%; margin-top: 10px">
+        Filter Searches
+      </button>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+      <script>
+        document.getElementById("filterButton").onclick = function () {
+          var selection = parseInt($("#selectionDropdown :selected").val());
+          var keyword = document.getElementById("keywordField").value;
+          var thePosts = <%- JSON.stringify(posts) %>;
+          var theUser = <%- JSON.stringify(user) %>;
+          if (selection != 0) {
+            var postsContainer = document.getElementById("postsContainer");
+            // Clears postsContainer
+            while(postsContainer.firstChild) {
+              postsContainer.removeChild(postsContainer.firstChild);
+            }
+            var html = '';
+            html += '<h2>Your posts</h2><ol>';
+            var noPosts = true;
+
+            // Iterates through posts. Displays if and only if users match AND search keyword matches
+            // Note: ignores leading and trailing whitespace and ignores case
+            for (i = 0; i < thePosts.length; i++) {
+              if (selection == 1) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].weekday.trim().toLowerCase() == keyword.trim().toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+              else if (selection == 2) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].time.trim().toLowerCase() == keyword.trim().toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+              else if (selection == 3) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].food.trim().toLowerCase() == keyword.trim().toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+              else if (selection == 4) {
+                if ((thePosts[i].user == theUser) && (thePosts[i].location.trim().toLowerCase() == keyword.trim().toLowerCase())) {
+                  noPosts = false;
+                  html += '<li>' + 
+                              'Post ID: ' + i.toString() + '<br>' + 
+                              'Weekday: ' + thePosts[i].weekday + '<br>' + 
+                              'Time: ' + thePosts[i].time + '<br>' + 
+                              'Food type: ' + thePosts[i].food + '<br>' +
+                              'Location: ' + thePosts[i].location + '<br>' + 
+                              '</li><br>';
+                }
+              }
+            } 
+            if (noPosts) {
+              html = '<h3>No posts match search!</h3>';
+            } else {
+              html += '</ol>';
+            }
+            postsContainer.innerHTML = html;
+          }
+        };
+    </script>
+    
+    </div>
+
+    <br><br><br>
+
     <ul style="color:white; float: left;" class="nav navbar-nav">
         <li><a href="/graphs"> See Data Visualizations and Set Admin  </a> </li>
     </ul>
