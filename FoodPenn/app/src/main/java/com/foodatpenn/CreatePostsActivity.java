@@ -52,14 +52,10 @@ public class CreatePostsActivity extends AppCompatActivity {
         postList = PostStoreMongo.getInstance();
         userEmail = this.getIntent().getStringExtra("Email");
 
-
         food = (EditText) findViewById(R.id.food);
         description = (EditText) findViewById(R.id.description);
         locationFood = (EditText) findViewById(R.id.locationFood);
         submitButton = (Button) findViewById(R.id.submitButton);
-
-
-
 
         if (getIntent().getSerializableExtra("RESULT") == null){
             posts = new ArrayList<Post>();
@@ -82,24 +78,19 @@ public class CreatePostsActivity extends AppCompatActivity {
     private void submitButtonClicked() {
         Date current = Calendar.getInstance().getTime();
         Post p = new Post(food.getText().toString(), description.getText().toString(),
-
                 locationFood.getText().toString(), current, counter);
-        postList.addPost(current.toString(), food.getText().toString(), description.getText().toString(), userEmail+ Integer.toString(counter), locationFood.getText().toString(), userEmail);
+
+        postList.addPost(current.toString(), food.getText().toString(), description.getText().toString(), userEmail+ Integer.toString(counter), locationFood.getText().toString(), userEmail, "");
 
         counter++;
         food.getText().clear();
         description.getText().clear();
         locationFood.getText().clear();
 
-
-
         posts.add(p);
     }
 
     public void moveToSeeAllPosts(View view) {
-
-
-
         Intent i = new Intent(this, AllPostsActivity.class);
         i.putExtra("Email", userEmail);
         i.putExtra("RESULT", posts);
@@ -108,9 +99,6 @@ public class CreatePostsActivity extends AppCompatActivity {
     }
 
     public void moveToSeeYourPosts(View view) {
-
-
-
         Intent i = new Intent(this, YourPostActivity.class);
         i.putExtra("Email", userEmail);
         i.putExtra("RESULT", posts);

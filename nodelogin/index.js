@@ -33,7 +33,7 @@ function checkHashPassword(userPassword, salt) {
 }
 
 class Post {
-	constructor(date, food, description, location, id, email) {
+	constructor(date, food, description, location, id, email, comments) {
 		this.id = id;
 		this.date = date;
 		this.food = food;
@@ -41,6 +41,7 @@ class Post {
 		this.location = location;
 		this.email = email;
 		this.user = email;
+		this.comments = comments;
 		var res = date.split(" ");
 		this.time = res[3];
 		if (res[0] == "Tue") {
@@ -289,8 +290,9 @@ client.connect( function(err){
 			var description = post_data.description;
 			var location = post_data.location;
 			var email = post_data.email;
+			var comments = post_data.comments;
 
-			var newPost = new Post(date, food, description, location, id, email);
+			var newPost = new Post(date, food, description, location, id, email, comments);
 
 			db.collection('postscollection').find({'id':id}).count(function(err, number) {
 				if (number != 0) {
@@ -407,6 +409,41 @@ client.connect( function(err){
         				} else {
         					response.json('Modified Posts');
         					console.log('Modified posts');
+        				}});
+
+        		    })
+                 }
+            })
+
+        });
+
+app.post('/updateComments', (request, response, next) => {
+        	var post_data = request.body;
+
+        	var db = client.db('postDB');
+
+            var id = post_data.id;
+            var comments = post_data.comments;
+
+
+        	db.collection('postscollection').find({'id':id}).count(function(err, number) {
+        		if (number == 0) {
+
+        			response.json({'status': 'email not found'});
+        			console.log('status: email not found');
+
+        		} else {
+        			db.collection('postscollection').findOne({'id':id}, function(err, user) {
+
+
+        			var newValues = {$set: {'comments': comments}};
+        			db.collection('postscollection').updateOne( {'id':id}, newValues, (err, res) => {
+        				if(err) {
+        					res.json( 'error' );
+        					console.log('error');
+        				} else {
+        					response.json('Modified Comments');
+        					console.log('Modified comments');
         				}});
 
         		    })

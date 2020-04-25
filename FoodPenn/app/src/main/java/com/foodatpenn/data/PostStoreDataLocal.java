@@ -58,8 +58,8 @@ public class PostStoreDataLocal implements PostStore{
     }
 
     @Override
-    public void addPost(String date, String food, String description, String id, String location, String email) {
-        Posts newPost = new Posts(date, food, description, id, location, email);
+    public void addPost(String date, String food, String description, String id, String location, String email, String comments) {
+        Posts newPost = new Posts(date, food, description, id, location, email, comments);
         data.put(id, newPost);
 
         String text = newPost.toString();
@@ -116,9 +116,24 @@ public class PostStoreDataLocal implements PostStore{
     }
 
     @Override
+    public String getComments(String id) {
+        return null;
+    }
+
+    @Override
     public void getSize(String id) {
 
     }
+
+    @Override
+    public void updateComments(String comments, String id) {
+
+        Posts currentUser = data.get(id);
+        currentUser.setComments(comments);
+
+    }
+
+
 
     @Override
     public int getMax() {

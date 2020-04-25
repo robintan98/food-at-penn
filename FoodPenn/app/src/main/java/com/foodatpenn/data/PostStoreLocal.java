@@ -18,8 +18,8 @@ public class PostStoreLocal implements PostStore {
     }
 
     @Override
-    public void addPost(String date, String food, String description, String id, String location, String email) {
-        data.put(id, new Posts(date, food, description, id, location, email));
+    public void addPost(String date, String food, String description, String id, String location, String email, String comments) {
+        data.put(id, new Posts(date, food, description, id, location, email, comments));
     }
 
 
@@ -53,6 +53,11 @@ public class PostStoreLocal implements PostStore {
     }
 
     @Override
+    public String getComments(String id) {
+        return data.get(id).getComments();
+    }
+
+    @Override
     public void getSize(String id) {
 
     }
@@ -68,6 +73,12 @@ public class PostStoreLocal implements PostStore {
         currentUser.setFood(food);
         currentUser.setDescription(description);
         currentUser.setLocation(location);
+    }
+
+    @Override
+    public void updateComments(String comments, String id) {
+        Posts currentUser = data.get(id);
+        currentUser.setComments(comments);
     }
 
     @Override

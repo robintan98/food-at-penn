@@ -3,16 +3,17 @@ package com.foodatpenn.data;
 import java.util.ArrayList;
 
 public class Posts {
-    private String id, food, description, location, date, email;
+    private String id, food, description, location, date, email, comments;
 
 
-    public Posts (String date, String food, String description, String id, String location, String email) {
+    public Posts (String date, String food, String description, String id, String location, String email, String comments) {
         this.date = date;
         this.food = food;
         this.description = description;
         this.id = id;
         this.location = location;
         this.email = email;
+        this.comments = comments;
 
     }
 
@@ -39,6 +40,8 @@ public class Posts {
 
     public String getEmail() { return email;}
 
+    public String getComments() { return comments; }
+
 
 
     public void setLocation(String location1) {
@@ -59,19 +62,21 @@ public class Posts {
 
     public void setEmail(String email1){this.email = email1;}
 
+    public void setComments(String comments1) {this.comments = comments1; }
+
 
 
     @Override
     public String toString() {
-        return date + ";" + food + ";" + description + ";" + id + ";" + location + ";" + email;
+        return date + ";" + food + ";" + description + ";" + id + ";" + location + ";" + email + ";" + comments;
     }
 
     public static Posts fromString(String s) {
         String[] data = s.split(";");
-        if (data.length != 6) {
+        if (data.length != 7) {
             return null;
         } else {
-            return new Posts(data[0], data[1], data[2], data[4], data[3], data[5]);
+            return new Posts(data[0], data[1], data[2], data[4], data[3], data[5], data[6]);
         }
     }
 }

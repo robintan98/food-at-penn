@@ -37,7 +37,7 @@ public class PostStoreMongo implements PostStore {
 
     private PostStoreMongo () {
 
-        defaultUser = new Posts("waiting on server", "", "waiting on server", "waiting on server", "waiting on server", "waiting on server");
+        defaultUser = new Posts("waiting on server", "", "waiting on server", "waiting on server", "waiting on server", "waiting on server", "waiting on server");
         currentUser = defaultUser;
 
         data  = new HashMap<String, Posts>();
@@ -62,8 +62,8 @@ public class PostStoreMongo implements PostStore {
 
 
     @Override
-    public void addPost(String date, String food, String description, String id, String location, String email) {
-        Posts newPost = new Posts(date, food, description, id, location, email);
+    public void addPost(String date, String food, String description, String id, String location, String email, String comments) {
+        Posts newPost = new Posts(date, food, description, id, location, email, comments);
         data.put(id, newPost);
 
         String text = newPost.toString();
@@ -71,7 +71,7 @@ public class PostStoreMongo implements PostStore {
 
 
 
-        compositeDisposable.add(iMyService.createPost(date, food, description, id, location, email)
+        compositeDisposable.add(iMyService.createPost(date, food, description, id, location, email, comments)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<String>() {
@@ -122,7 +122,8 @@ public class PostStoreMongo implements PostStore {
                             String id = jsonArr.getJSONObject(i).getString("id");
                             String location = jsonArr.getJSONObject(i).getString("location");
                             String email = jsonArr.getJSONObject(i).getString("email");
-                            Posts currPost = new Posts(date, food, description, id, location, email);
+                            String comments = jsonArr.getJSONObject(i).getString("comments");
+                            Posts currPost = new Posts(date, food, description, id, location, email, comments);
                             putUser(id, currPost);
                         }
                     }
@@ -153,7 +154,8 @@ public class PostStoreMongo implements PostStore {
             String id = jObj.getString("phone");
             String location = jObj.getString("location");
             String email = jObj.getString("email");
-            Posts post = new Posts(date, food, description, id, location, email);
+            String comments = jObj.getString("comments");
+            Posts post = new Posts(date, food, description, id, location, email, comments);
             currentUser = post;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -257,12 +259,34 @@ public class PostStoreMongo implements PostStore {
     }
 
     @Override
+    public String getComments(String id) {
+        if (id.equals(currentUser.getId())) {
+            return currentUser.getComments();
+        }
+        return data.get(id).getComments();
+    }
+
+    @Override
     public void modifyPost(String id, String food, String description, String location, String email) {
         currentUser.setFood(food);
         currentUser.setDescription(description);
         currentUser.setLocation(location);
 
         compositeDisposable.add(iMyService.modifyPost(id, food, description, location, email)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+
+                    }
+                }));
+    }
+
+    @Override
+    public void updateComments(String comments, String id) {
+        currentUser.setComments(comments);
+        compositeDisposable.add(iMyService.updateComments(comments, id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<String>() {
