@@ -43,8 +43,8 @@ public class RegistrationActivity extends AppCompatActivity {
             printMessage("Please use a valid Penn Email");
         } else if (users.accountExists(newEmail)) {
             printMessage("Email already in use");
-            Intent i = new Intent(this, MainActivity.class);
-            startActivityForResult(i, 2);
+//            Intent i = new Intent(this, MainActivity.class);
+//            startActivityForResult(i, 2);
         } else if (!newPassword.equals(newPasswordConfirm)) {
             printMessage("Passwords must match");
         } else if (newPassword.length() < 8) {
