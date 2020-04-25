@@ -65,7 +65,8 @@ public interface IMyService {
                                     @Field("description") String description,
                                     @Field("id") String id,
                                     @Field("location") String location,
-                                    @Field("email") String email);
+                                    @Field("email") String email,
+                                    @Field("comments") String comments);
 
     @POST("modifyPost")
     @FormUrlEncoded
@@ -74,6 +75,11 @@ public interface IMyService {
                                   @Field("description") String description,
                                   @Field("location") String location,
                                     @Field("email") String email);
+
+    @POST("updateComments")
+    @FormUrlEncoded
+    Observable<String> updateComments(@Field("comments") String comments,
+                                  @Field("id") String id);
 
     @POST("deletePost")
     @FormUrlEncoded

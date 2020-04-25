@@ -3,6 +3,7 @@ package com.foodatpenn;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +43,8 @@ public class AllPostsActivity extends AppCompatActivity {
     EditText removeId;
     String userEmail;
 
+    EditText idComment;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,7 @@ public class AllPostsActivity extends AppCompatActivity {
         userEmail = this.getIntent().getStringExtra("Email");
         all = postList.getUsers();
 
-
+        idComment = (EditText) findViewById(R.id.idComment);
 
         id = (EditText) findViewById(R.id.id1);
         food = (EditText) findViewById(R.id.food1);
@@ -109,6 +112,7 @@ public class AllPostsActivity extends AppCompatActivity {
                 String description = posts1.get(i).getDescription();
                 String location = posts1.get(i).getLocation();
                 String id = posts1.get(i).getId();
+                String comments = posts1.get(i).getComments();
 
                 allPosts += date + "\n" +
                         "Food is " + food+ "\n"
@@ -160,7 +164,15 @@ public class AllPostsActivity extends AppCompatActivity {
         }
 
     }
+
+    public void movetoCommentOnPosts(View view) {
+        String index = idComment.getText().toString();
+
+        Intent i = new Intent(this, WriteCommentActivity.class);
+        i.putExtra("ID", idComment.getText().toString());
+        //i.putExtra("Comments", all.get(index).getComments());
+        startActivityForResult(i, 2);
+    }
+
+
 }
-
-
-
