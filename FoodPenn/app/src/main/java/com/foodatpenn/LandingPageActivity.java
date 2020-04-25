@@ -4,14 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
-import com.foodatpenn.data.RegisterStoreDataLocal;
-import com.foodatpenn.data.RegistrationStoreMongo;
 
 public class LandingPageActivity extends AppCompatActivity {
     TextView centerMessage;
@@ -24,12 +21,12 @@ public class LandingPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing_page);
 
-        rs = RegistrationStoreMongo.getInstance();
+       // rs = RegistrationStoreMongo.getInstance();
         starterIntent = getIntent();
         centerMessage = findViewById(R.id.centerMessage);
         userEmail = this.getIntent().getStringExtra("Email");
 
-        centerMessage.setText("Success!!!  Welcome " + rs.getName(userEmail) + ", Member of Class of " + rs.getClassYear(userEmail) + " with phone " + rs.getPhone(userEmail));
+      //  centerMessage.setText("Success!!!  Welcome " + rs.getName(userEmail) + ", Member of Class of " + rs.getClassYear(userEmail) + " with phone " + rs.getPhone(userEmail));
     }
 
     public void moveToModify(View view) {
@@ -46,6 +43,7 @@ public class LandingPageActivity extends AppCompatActivity {
 
     public void moveToPosts(View view) {
         Intent i = new Intent(this, CreatePostsActivity.class);
+        i.putExtra("Email", userEmail);
         startActivityForResult(i, 2);
     }
 

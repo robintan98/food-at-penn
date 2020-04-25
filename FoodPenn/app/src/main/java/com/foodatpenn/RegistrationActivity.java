@@ -1,5 +1,6 @@
 package com.foodatpenn;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -9,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodpenn.R;
 import com.foodatpenn.data.RegistrationStore;
-import com.foodatpenn.data.RegisterStoreDataLocal;
 import com.foodatpenn.data.RegistrationStoreMongo;
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -43,6 +43,8 @@ public class RegistrationActivity extends AppCompatActivity {
             printMessage("Please use a valid Penn Email");
         } else if (users.accountExists(newEmail)) {
             printMessage("Email already in use");
+            Intent i = new Intent(this, MainActivity.class);
+            startActivityForResult(i, 2);
         } else if (!newPassword.equals(newPasswordConfirm)) {
             printMessage("Passwords must match");
         } else if (newPassword.length() < 8) {
