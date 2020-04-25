@@ -3,29 +3,32 @@ package com.foodatpenn;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodpenn.R;
-import com.foodatpenn.data.RegisterStoreDataLocal;
+import com.foodatpenn.data.PostStore;
+import com.foodatpenn.data.PostStoreMongo;
+import com.foodatpenn.data.Posts;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AllPostsActivity extends AppCompatActivity {
+    PostStore postList;
 
-
+    Map<String, Posts> all;
+    ArrayList<Posts> posts1;
     private ArrayList<Post> posts;
     private TextView textView;
     private String allPosts;
@@ -37,14 +40,18 @@ public class AllPostsActivity extends AppCompatActivity {
     EditText description;
     EditText locationFood;
     EditText removeId;
+    String userEmail;
 
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_posts_activity);
-
+        postList = PostStoreMongo.getInstance();
+        posts1 = new ArrayList<Posts>();
         posts = (ArrayList<Post>) getIntent().getSerializableExtra("RESULT");
+        userEmail = this.getIntent().getStringExtra("Email");
+        all = postList.getUsers();
 
 
 
@@ -87,18 +94,26 @@ public class AllPostsActivity extends AppCompatActivity {
 
         }
 
-        public void showEntries(){
-            //        String allPosts = "";
+        public void showEntries(){        //        String allPosts = "";
             DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss ");
 
-            for (int i = 0; i < posts.size(); i++) {
-                Date current = posts.get(i).getDate();
-                String date = df.format(current);
+            for (Posts curr: all.values()){
+
+                    posts1.add(curr);
+
+            }
+            allPosts = posts1.size() + " ";
+            for (int i = 0; i < posts1.size(); i++) {
+                String date = posts1.get(i).getDate();
+                String food = posts1.get(i).getFood();
+                String description = posts1.get(i).getDescription();
+                String location = posts1.get(i).getLocation();
+                String id = posts1.get(i).getId();
 
                 allPosts += date + "\n" +
-                        "Food is " + posts.get(i).getFood() + "\n"
-                        + "Description is " + posts.get(i).getDescription() + "\n"
-                        + "Location is " + posts.get(i).getLocation() + "\n" + "ID is " + posts.get(i).getId() + "\n" + "\n";
+                        "Food is " + food+ "\n"
+                        + "Description is " + description + "\n"
+                        + "Location is " + location + "\n" + "ID is " + id + "\n" + "\n";
             }
 
             textView = findViewById(R.id.textPosts);
@@ -109,7 +124,8 @@ public class AllPostsActivity extends AppCompatActivity {
         Date current = Calendar.getInstance().getTime();
         String index = id.getText().toString();
         int finalValue = Integer.parseInt(index);
-
+        postList.modifyPost(index,food.getText().toString(), description.getText().toString(),
+                locationFood.getText().toString(), userEmail);
         for (int i = 0; i < posts.size(); i++){
             Post curr = posts.get(i);
             if (curr.getId() == finalValue){
@@ -128,11 +144,13 @@ public class AllPostsActivity extends AppCompatActivity {
     public void moveBack() {
         Intent i = new Intent(this, CreatePostsActivity.class);
         i.putExtra("RESULT", posts);
+        i.putExtra("Email", userEmail);
         startActivityForResult(i, 2);
     }
 
     public void removePost() {
         String index = removeId.getText().toString();
+        postList.deletePost(index);
         int finalValue = Integer.parseInt(index);
         for (int i = 0; i < posts.size(); i++){
             Post curr = posts.get(i);

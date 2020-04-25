@@ -24,9 +24,18 @@ public interface IMyService {
     @FormUrlEncoded
     Observable<String> contains(@Field("email") String email);
 
+
+
     @POST("getUser")
     @FormUrlEncoded
     Observable<String> getUser(@Field("email") String email);
+
+
+    @POST("containsId")
+    @FormUrlEncoded
+    Observable<String> containsId(@Field("id") String id);
+
+
 
     @POST("modify")
     @FormUrlEncoded
@@ -39,9 +48,36 @@ public interface IMyService {
     @FormUrlEncoded
     Observable<String> allUsers(@Field("email") String email);
 
+    @POST("allPosts")
+    @FormUrlEncoded
+    Observable<String> allPosts(@Field("id") String id);
+
     @POST("addRating")
     @FormUrlEncoded
     Observable<String> addRating(@Field("email") String email,
                                  @Field("rating") int rating);
+
+    @POST("createPost")
+    @FormUrlEncoded
+    Observable<String> createPost(
+                                    @Field("date") String date,
+                                    @Field("food") String food,
+                                    @Field("description") String description,
+                                    @Field("id") String id,
+                                    @Field("location") String location,
+                                    @Field("email") String email);
+
+    @POST("modifyPost")
+    @FormUrlEncoded
+    Observable<String> modifyPost(@Field("id") String id,
+                                  @Field("food") String food,
+                                  @Field("description") String description,
+                                  @Field("location") String location,
+                                    @Field("email") String email);
+
+    @POST("deletePost")
+    @FormUrlEncoded
+    Observable<String> deletePost(@Field("id") String id);
+
 
 }

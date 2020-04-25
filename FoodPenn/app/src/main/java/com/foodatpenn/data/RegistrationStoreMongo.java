@@ -169,13 +169,17 @@ public class RegistrationStoreMongo implements RegistrationStore {
                     public void accept(String response) throws Exception {
                         JSONArray jsonArr = new JSONArray(response);
                         for (int i = 0; i < jsonArr.length(); i++) {
-                            String name = jsonArr.getJSONObject(i).getString("name");
+                            String name = jsonArr.getJSONObject(i).getString("firstName");
                             String email = jsonArr.getJSONObject(i).getString("email");
                             String phone = jsonArr.getJSONObject(i).getString("phone");
                             String year = jsonArr.getJSONObject(i).getString("year");
+                            boolean professor;
+                            professor = year.contains("p") || year.trim().length() == 0;
                             String rating = jsonArr.getJSONObject(i).getString("rating");
-                            User currUser = new User(email, "", name, Integer.valueOf(year), phone, Double.valueOf(rating));
-                            putUser(email, currUser);
+                            if (!professor) {
+                                User currUser = new User(email, "", name, Integer.valueOf(year), phone, Double.valueOf(rating));
+                                putUser(email, currUser);
+                            }
                         }
                     }
                 }));
@@ -194,7 +198,7 @@ public class RegistrationStoreMongo implements RegistrationStore {
                 Log.v(key, jObj.get(key).toString());
             }
             String email = jObj.getString("email");
-            String name = jObj.getString("name");
+            String name = jObj.getString("firstName");
             String year = jObj.getString("year");
             String phone = jObj.getString("phone");
             User user = new User(email, "", name, Integer.valueOf(year), phone);
@@ -311,9 +315,6 @@ public class RegistrationStoreMongo implements RegistrationStore {
 
     @Override
     public double getRating(String email) {
-        if (email.equals(currentUser.getEmail())) {
-            return currentUser.getRating();
-        }
         return data.get(email).getRating();
     }
 
