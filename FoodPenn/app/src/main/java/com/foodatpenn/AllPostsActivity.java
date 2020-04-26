@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,6 +47,11 @@ public class AllPostsActivity extends AppCompatActivity {
 
     EditText idComment;
 
+    Spinner filterFood;
+    Spinner filterLocation;
+    Button filterFoodButton;
+    Button filterLocationButton;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +72,28 @@ public class AllPostsActivity extends AppCompatActivity {
         modifyButton = (Button) findViewById(R.id.modifyButton);
         backButton = (Button) findViewById(R.id.backButton);
 
+        filterFood = (Spinner) findViewById(R.id.filterFood);
+        String[] dataViews = new String[] {"Chinese", "Indian", "Mexican", "Italian", "American", "Japanese", "Thai", "Other"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, dataViews);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterFood.setAdapter(adapter);
+
+        filterLocation = (Spinner) findViewById(R.id.filterLocation);
+        String[] dataViews1 = new String[] {"Huntsman", "Stommons", "Harrison", "Rodin", "Harnwell", "Van Pelt", "Williams", "Levine", "Towne", "Other"};
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, dataViews1);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterLocation.setAdapter(adapter1);
+
+        filterFoodButton = (Button) findViewById(R.id.filterFoodButton);
+        filterLocationButton = (Button) findViewById(R.id.filterLocationButton);
+
         removeId = (EditText) findViewById(R.id.remove1);
         remove = (Button) findViewById(R.id.removeButton);
         showEntries();
+
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +119,6 @@ public class AllPostsActivity extends AppCompatActivity {
                 startActivity(getIntent());
             }
         });
-
 
         }
 
@@ -172,6 +197,62 @@ public class AllPostsActivity extends AppCompatActivity {
         i.putExtra("ID", idComment.getText().toString());
         //i.putExtra("Comments", all.get(index).getComments());
         startActivityForResult(i, 2);
+    }
+
+    public void filterFoodButtonClicked(View view) {
+
+        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss ");
+        String filterFoodString = filterFood.getSelectedItem().toString();
+
+        allPosts = posts1.size() + " ";
+        for (int i = 0; i < posts1.size(); i++) {
+            String date = posts1.get(i).getDate();
+            String food = posts1.get(i).getFood();
+            String description = posts1.get(i).getDescription();
+            String location = posts1.get(i).getLocation();
+            String id = posts1.get(i).getId();
+            String comments = posts1.get(i).getComments();
+
+            if (food.equals(filterFoodString)) {
+                allPosts += date + "\n" +
+                        "Food is " + food+ "\n"
+                        + "Description is " + description + "\n"
+                        + "Location is " + location + "\n" + "ID is " + id + "\n" + "\n";
+            }
+
+        }
+
+        textView = findViewById(R.id.textPosts);
+        textView.setText(allPosts);
+
+    }
+
+    public void filterLocationButtonClicked(View view) {
+
+        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss ");
+        String filterLocationString = filterLocation.getSelectedItem().toString();
+        
+        allPosts = posts1.size() + " ";
+        for (int i = 0; i < posts1.size(); i++) {
+            String date = posts1.get(i).getDate();
+            String food = posts1.get(i).getFood();
+            String description = posts1.get(i).getDescription();
+            String location = posts1.get(i).getLocation();
+            String id = posts1.get(i).getId();
+            String comments = posts1.get(i).getComments();
+
+            if (location.equals(filterLocationString)) {
+                allPosts += date + "\n" +
+                        "Food is " + food+ "\n"
+                        + "Description is " + description + "\n"
+                        + "Location is " + location + "\n" + "ID is " + id + "\n" + "\n";
+            }
+
+        }
+
+        textView = findViewById(R.id.textPosts);
+        textView.setText(allPosts);
+
     }
 
 

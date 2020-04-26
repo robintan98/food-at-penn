@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Bundle;
@@ -35,9 +37,9 @@ import com.foodatpenn.data.PostStoreMongo;
 
 public class CreatePostsActivity extends AppCompatActivity {
     PostStore postList;
-    EditText food;
+    Spinner food;
     EditText description;
-    EditText locationFood;
+    Spinner locationFood;
     MainActivity email = new MainActivity();
     private Button submitButton;
     String userEmail;
@@ -52,9 +54,22 @@ public class CreatePostsActivity extends AppCompatActivity {
         postList = PostStoreMongo.getInstance();
         userEmail = this.getIntent().getStringExtra("Email");
 
-        food = (EditText) findViewById(R.id.food);
+        food = (Spinner) findViewById(R.id.food);
+        String[] dataViews = new String[] {"Chinese", "Indian", "Mexican", "Italian", "American", "Japanese", "Thai", "Other"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, dataViews);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        food.setAdapter(adapter);
+
         description = (EditText) findViewById(R.id.description);
-        locationFood = (EditText) findViewById(R.id.locationFood);
+
+        locationFood = (Spinner) findViewById(R.id.locationFood);
+        String[] dataViews1 = new String[] {"Huntsman", "Stommons", "Harrison", "Rodin", "Harnwell", "Van Pelt", "Williams", "Levine", "Towne", "Other"};
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, dataViews1);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationFood.setAdapter(adapter1);
+
         submitButton = (Button) findViewById(R.id.submitButton);
 
         if (getIntent().getSerializableExtra("RESULT") == null){
@@ -77,15 +92,15 @@ public class CreatePostsActivity extends AppCompatActivity {
 
     private void submitButtonClicked() {
         Date current = Calendar.getInstance().getTime();
-        Post p = new Post(food.getText().toString(), description.getText().toString(),
-                locationFood.getText().toString(), current, counter);
+        Post p = new Post(food.getSelectedItem().toString(), description.getText().toString(),
+                locationFood.getSelectedItem().toString(), current, counter);
 
-        postList.addPost(current.toString(), food.getText().toString(), description.getText().toString(), userEmail+ Integer.toString(counter), locationFood.getText().toString(), userEmail, "");
+        postList.addPost(current.toString(), food.getSelectedItem().toString(), description.getText().toString(), userEmail+ Integer.toString(counter), locationFood.getSelectedItem().toString(), userEmail, "");
 
         counter++;
-        food.getText().clear();
+        //food.getSelectedItem().clear();
         description.getText().clear();
-        locationFood.getText().clear();
+        //locationFood.getSelectedItem().clear();
 
         posts.add(p);
     }
