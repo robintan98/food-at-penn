@@ -11,7 +11,7 @@ public interface PostStore {
     public String getEmail(String id);
     public String getComments(String id);
     public void updateComments(String comments, String id);
-
+    public void clearPost(String email);
     public void getSize(String id);
     public int getMax();
     public void modifyPost(String date, String food, String description, String location, String email);

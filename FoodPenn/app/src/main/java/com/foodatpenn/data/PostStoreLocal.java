@@ -82,6 +82,11 @@ public class PostStoreLocal implements PostStore {
     }
 
     @Override
+    public void clearPost(String email) {
+
+    }
+
+    @Override
     public void deletePost(String id) {
 
     }

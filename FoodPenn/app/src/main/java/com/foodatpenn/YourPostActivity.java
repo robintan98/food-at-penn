@@ -14,6 +14,7 @@ import com.foodatpenn.data.PostStore;
 import com.foodatpenn.data.PostStoreMongo;
 import com.foodatpenn.data.Posts;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class YourPostActivity extends AppCompatActivity {
     private Button modifyButton;
     private Button backButton;
     private Button remove;
+    private Button clearButton;
     EditText id;
     EditText food;
     EditText description;
@@ -51,7 +53,7 @@ public class YourPostActivity extends AppCompatActivity {
         posts1 = new ArrayList<Posts>();
         posts = (ArrayList<Post>) getIntent().getSerializableExtra("RESULT");
         userEmail = this.getIntent().getStringExtra("Email");
-        all = postList.getUsers();
+
 
 
 
@@ -61,6 +63,7 @@ public class YourPostActivity extends AppCompatActivity {
         locationFood = (EditText) findViewById(R.id.locationFood1);
         modifyButton = (Button) findViewById(R.id.modifyButton);
         backButton = (Button) findViewById(R.id.backButton);
+        clearButton = (Button) findViewById(R.id.clearButton);
 
         removeId = (EditText) findViewById(R.id.remove1);
         remove = (Button) findViewById(R.id.removeButton);
@@ -77,8 +80,9 @@ public class YourPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 removePost();
-                finish();
-                startActivity(getIntent());
+                recreate();
+//                finish();
+//                startActivity(getIntent());
             }
         });
 
@@ -91,13 +95,23 @@ public class YourPostActivity extends AppCompatActivity {
             }
         });
 
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearPost();
+                recreate();
+            }
+        });
+
+
+
 
     }
 
     public void showEntries(){
         //        String allPosts = "";
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss ");
-
+        all = postList.getUsers();
         for (Posts curr: all.values()){
             if(userEmail.equals(curr.getEmail())){
                 posts1.add(curr);
@@ -149,12 +163,14 @@ public class YourPostActivity extends AppCompatActivity {
     public void removePost() {
         String index = removeId.getText().toString();
         postList.deletePost(index);
-
-        recreate();
+        showEntries();
         id.getText().clear();
+    }
 
-//
-
+    public void clearPost(){
+        String email = userEmail;
+        postList.clearPost(email);
+        showEntries();
     }
 
 }

@@ -133,6 +133,10 @@ public class PostStoreDataLocal implements PostStore{
 
     }
 
+    @Override
+    public void clearPost(String email) {
+
+    }
 
 
     @Override

@@ -34,6 +34,10 @@ public class LandingPageActivity extends AppCompatActivity {
         i.putExtra("Email", userEmail);
         startActivityForResult(i, 2);
     }
+    public void moveToLogout(View view) {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivityForResult(i, 2);
+    }
 
     public void moveToUsers(View view) {
         Intent i = new Intent(this, ViewAllActivity.class);

@@ -85,5 +85,9 @@ public interface IMyService {
     @FormUrlEncoded
     Observable<String> deletePost(@Field("id") String id);
 
+    @POST("clearPost")
+    @FormUrlEncoded
+    Observable<String> clearPost(@Field("email") String email);
+
 
 }

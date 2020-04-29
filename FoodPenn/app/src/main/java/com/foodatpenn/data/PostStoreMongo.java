@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -299,8 +300,31 @@ public class PostStoreMongo implements PostStore {
 
     @Override
     public void deletePost(String id) {
-
+        data.remove(id);
         compositeDisposable.add(iMyService.deletePost(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String response) throws Exception {
+
+                    }
+                }));
+    }
+
+    @Override
+    public void clearPost(String email) {
+        ArrayList<String> idList = new ArrayList<String>();
+        for(Posts curr: data.values()){
+            if (curr.getEmail().equals(email)){
+                String id = curr.getId();
+                idList.add(id);
+            }
+        }
+        for(int i = 0; i < idList.size(); i++){
+            data.remove(idList.get(i));
+        }
+        compositeDisposable.add(iMyService.clearPost(email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<String>() {
