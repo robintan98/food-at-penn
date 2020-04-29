@@ -210,7 +210,10 @@ router.post('/register', function(req, res) {
                            phone: phone,
                            school: school,
                            year: year,
-                           isAdmin: isAdmin};
+                           isAdmin: isAdmin,
+                           rating: 5,
+                           numReviews: 1
+                          };
         accountsCollection.insertOne(insertedDoc, function(err) {
           if (err) {
             console.log('Unable to insert document');
