@@ -483,6 +483,37 @@ app.post('/updateComments', (request, response, next) => {
 
         });
 
+                app.post('/clearPost', (request, response, next) => {
+                    var post_data = request.body;
+
+                    var db = client.db('postDB');
+                      var email = post_data.email;
+
+
+
+                    db.collection('postscollection').find({'email':email}).count(function(err, number) {
+                        if (number == 0) {
+
+                            response.json({'status': 'email not found'});
+                            console.log('status: email not found');
+
+                        } else {
+                            db.collection('postscollection').deleteMany({'email':email}, function(err, user) {
+
+                                if(err) {
+                                    res.json( 'error' );
+                                    console.log('error');
+                                } else {
+                                    response.json('Deleted Posts');
+                                    console.log('Deleted posts');
+                                }});
+
+                            }
+
+                    })
+
+                });
+
 
                 app.post('/size', (request, response, next) => {
                     var post_data = request.body;
