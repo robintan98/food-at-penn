@@ -210,9 +210,9 @@ router.post('/register', function(req, res) {
                            phone: phone,
                            school: school,
                            year: year,
-                           isAdmin: isAdmin,
-                           rating: 5,
-                           numReviews: 1
+                           rating: "5",
+                           numReviews: "1",
+                           isAdmin: isAdmin
                           };
         accountsCollection.insertOne(insertedDoc, function(err) {
           if (err) {
